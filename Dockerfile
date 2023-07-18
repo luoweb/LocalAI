@@ -4,7 +4,7 @@ FROM golang:$GO_VERSION as requirements
 
 ARG BUILD_TYPE
 ARG CUDA_MAJOR_VERSION=11
-ARG CUDA_MINOR_VERSION=7
+ARG CUDA_MINOR_VERSION=2
 ARG SPDLOG_VERSION="1.11.0"
 ARG PIPER_PHONEMIZE_VERSION='1.0.0'
 ARG TARGETARCH
@@ -20,7 +20,7 @@ RUN apt-get update && \
 RUN if [ "${BUILD_TYPE}" = "cublas" ]; then \
     apt-get install -y software-properties-common && \
     apt-add-repository contrib && \
-    curl -O https://developer.download.nvidia.com/compute/cuda/repos/debian11/x86_64/cuda-keyring_1.0-1_all.deb && \
+    curl -O https://developer.download.nvidia.com/compute/cuda/repos/debian10/x86_64/cuda-keyring_1.0-1_all.deb && \
     dpkg -i cuda-keyring_1.0-1_all.deb && \
     rm -f cuda-keyring_1.0-1_all.deb && \
     apt-get update && \
