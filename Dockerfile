@@ -28,6 +28,9 @@ RUN if [ "${BUILD_TYPE}" = "cublas" ]; then \
     ; fi
 ENV PATH /usr/local/cuda/bin:${PATH}
 
+# Compat 11.2 build with debian10
+ENV CUDACXX  /usr/local/cuda/bin/nvcc
+
 WORKDIR /build
 
 # OpenBLAS requirements
