@@ -4,12 +4,11 @@ GOVET=$(GOCMD) vet
 BINARY_NAME=local-ai
 
 # llama.cpp versions
-# Temporarly pinned to https://github.com/go-skynet/go-llama.cpp/pull/124
-GOLLAMA_VERSION?=562d2b5a71195627a63bb34f639e0fb0e2b2df3f
+GOLLAMA_VERSION?=8c51308e42d79e8de2553747b23e74f444b02ae2
 
 # gpt4all version
 GPT4ALL_REPO?=https://github.com/nomic-ai/gpt4all
-GPT4ALL_VERSION?=14f4b522d5c6d59db13d242135acba5ec14214fa
+GPT4ALL_VERSION?=91a32c0e84a091ce7e0a3c4d08a058c75c770306
 
 # go-ggml-transformers version
 GOGGMLTRANSFORMERS_VERSION?=ffb09d7dd71e2cbc6c5d7d05357d230eea6f369a
