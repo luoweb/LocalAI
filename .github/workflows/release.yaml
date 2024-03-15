@@ -41,9 +41,9 @@ jobs:
         if: ${{ matrix.build == 'cuda12' || matrix.build == 'cuda11' }}
         run: |
           if [ "${{ matrix.build }}" == "cuda12" ]; then
-            export CUDA_VERSION=12-3
+            export CUDA_VERSION=12-1
           else
-            export CUDA_VERSION=11-7
+            export CUDA_VERSION=11-6
           fi
           curl -O https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
           sudo dpkg -i cuda-keyring_1.1-1_all.deb

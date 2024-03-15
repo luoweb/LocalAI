@@ -19,7 +19,7 @@ on:
         type: string
       cuda-minor-version:
         description: 'CUDA minor version'
-        default: "7"
+        default: "6"
         type: string
       platforms:
         description: 'Platforms'
