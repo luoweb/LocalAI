@@ -1,10 +1,10 @@
-name: dreamshaper
+name: stablediffusion
 parameters:
   model: huggingface://Lykon/DreamShaper/DreamShaper_8_pruned.safetensors
 backend: diffusers
 step: 25
 f16: true
-cuda: true
+
 diffusers:
   pipeline_type: StableDiffusionPipeline
   cuda: true

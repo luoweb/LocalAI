@@ -5,7 +5,7 @@ BINARY_NAME=local-ai
 
 # llama.cpp versions
 GOLLAMA_STABLE_VERSION?=2b57a8ae43e4699d3dc5d1496a1ccd42922993be
-CPPLLAMA_VERSION?=1c51f98adcbad40e3c41f0a6ffadeb723190b417
+CPPLLAMA_VERSION?=d0a71233fbf8ade8ef06ad8e6b81d1d7b254895f
 
 # gpt4all version
 GPT4ALL_REPO?=https://github.com/nomic-ai/gpt4all
@@ -16,7 +16,7 @@ RWKV_REPO?=https://github.com/donomii/go-rwkv.cpp
 RWKV_VERSION?=661e7ae26d442f5cfebd2a0881b44e8c55949ec6
 
 # whisper.cpp version
-WHISPER_CPP_VERSION?=79d5765e7e1a904d976adfd5636da7da43163eb3
+WHISPER_CPP_VERSION?=fff24a0148fe194df4997a738eeceddd724959c3
 
 # bert.cpp version
 BERT_VERSION?=6abe312cded14042f6b7c3cd8edf082713334a4d
@@ -159,6 +159,7 @@ ALL_GRPC_BACKENDS+=backend-assets/grpc/llama-ggml
 ALL_GRPC_BACKENDS+=backend-assets/grpc/gpt4all
 ALL_GRPC_BACKENDS+=backend-assets/grpc/rwkv
 ALL_GRPC_BACKENDS+=backend-assets/grpc/whisper
+ALL_GRPC_BACKENDS+=backend-assets/grpc/local-store
 ALL_GRPC_BACKENDS+=$(OPTIONAL_GRPC)
 
 GRPC_BACKENDS?=$(ALL_GRPC_BACKENDS) $(OPTIONAL_GRPC)
@@ -333,7 +334,7 @@ prepare-test: grpcs
 
 test: prepare test-models/testmodel.ggml grpcs
 	@echo 'Running tests'
-	export GO_TAGS="tts stablediffusion"
+	export GO_TAGS="tts stablediffusion debug"
 	$(MAKE) prepare-test
 	HUGGINGFACE_GRPC=$(abspath ./)/backend/python/sentencetransformers/run.sh TEST_DIR=$(abspath ./)/test-dir/ FIXTURES=$(abspath ./)/tests/fixtures CONFIG_FILE=$(abspath ./)/test-models/config.yaml MODELS_PATH=$(abspath ./)/test-models \
 	$(GOCMD) run github.com/onsi/ginkgo/v2/ginkgo --label-filter="!gpt4all && !llama && !llama-gguf"  --flake-attempts $(TEST_FLAKES) --fail-fast -v -r $(TEST_PATHS)
@@ -352,6 +353,10 @@ prepare-e2e:
 run-e2e-image:
 	ls -liah $(abspath ./tests/e2e-fixtures)
 	docker run -p 5390:8080 -e MODELS_PATH=/models -e THREADS=1 -e DEBUG=true -d --rm -v $(TEST_DIR):/models --gpus all --name e2e-tests-$(RANDOM) localai-tests
+
+run-e2e-aio:
+	@echo 'Running e2e AIO tests'
+	$(GOCMD) run github.com/onsi/ginkgo/v2/ginkgo --flake-attempts 5 -v -r ./tests/e2e-aio
 
 test-e2e:
 	@echo 'Running e2e tests'
@@ -382,6 +387,11 @@ test-tts: prepare-test
 test-stablediffusion: prepare-test
 	TEST_DIR=$(abspath ./)/test-dir/ FIXTURES=$(abspath ./)/tests/fixtures CONFIG_FILE=$(abspath ./)/test-models/config.yaml MODELS_PATH=$(abspath ./)/test-models \
 	$(GOCMD) run github.com/onsi/ginkgo/v2/ginkgo --label-filter="stablediffusion" --flake-attempts 1 -v -r $(TEST_PATHS)
+
+test-stores: backend-assets/grpc/local-store
+	mkdir -p tests/integration/backend-assets/grpc
+	cp -f backend-assets/grpc/local-store tests/integration/backend-assets/grpc/
+	$(GOCMD) run github.com/onsi/ginkgo/v2/ginkgo --label-filter="stores" --flake-attempts 1 -v -r tests/integration
 
 test-container:
 	docker build --target requirements -t local-ai-test-container .
@@ -532,11 +542,13 @@ backend-assets/grpc/whisper: sources/whisper.cpp sources/whisper.cpp/libwhisper.
 	CGO_LDFLAGS="$(CGO_LDFLAGS) $(CGO_LDFLAGS_WHISPER)" C_INCLUDE_PATH=$(CURDIR)/sources/whisper.cpp LIBRARY_PATH=$(CURDIR)/sources/whisper.cpp \
 	$(GOCMD) build -ldflags "$(LD_FLAGS)" -tags "$(GO_TAGS)" -o backend-assets/grpc/whisper ./backend/go/transcribe/
 
+backend-assets/grpc/local-store: backend-assets/grpc
+	$(GOCMD) build -ldflags "$(LD_FLAGS)" -tags "$(GO_TAGS)" -o backend-assets/grpc/local-store ./backend/go/stores/
+
 grpcs: prepare $(GRPC_BACKENDS)
 
 DOCKER_IMAGE?=local-ai
 DOCKER_AIO_IMAGE?=local-ai-aio
-DOCKER_AIO_SIZE?=cpu
 IMAGE_TYPE?=core
 BASE_IMAGE?=ubuntu:22.04
 
@@ -549,11 +561,9 @@ docker:
 		-t $(DOCKER_IMAGE) .
 	
 docker-aio:
-	@echo "Building AIO image with size $(DOCKER_AIO_SIZE)"
-	@echo "Building AIO image with base image $(BASE_IMAGE)"
+	@echo "Building AIO image with base $(BASE_IMAGE) as $(DOCKER_AIO_IMAGE)"
 	docker build \
 		--build-arg BASE_IMAGE=$(BASE_IMAGE) \
-		--build-arg SIZE=$(DOCKER_AIO_SIZE) \
 		-t $(DOCKER_AIO_IMAGE) -f Dockerfile.aio .
 
 docker-aio-all:
