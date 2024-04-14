@@ -1,5 +1,5 @@
 ARG IMAGE_TYPE=extras
-ARG BASE_IMAGE=ubuntu:22.04
+ARG BASE_IMAGE=ubuntu:20.04
 
 # extras or core
 FROM ${BASE_IMAGE} as requirements-core
@@ -50,7 +50,7 @@ RUN echo "Target Variant: $TARGETVARIANT"
 # CuBLAS requirements
 RUN if [ "${BUILD_TYPE}" = "cublas" ]; then \
     apt-get install -y software-properties-common && \
-    curl -O https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb && \
+    curl -O https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.1-1_all.deb && \
     dpkg -i cuda-keyring_1.1-1_all.deb && \
     rm -f cuda-keyring_1.1-1_all.deb && \
     apt-get update && \
@@ -82,6 +82,9 @@ RUN test -n "$TARGETARCH" \
 
 FROM requirements-core as requirements-extras
 
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Shanghai
+
 RUN apt install -y gpg && \
     curl https://repo.anaconda.com/pkgs/misc/gpgkeys/anaconda.asc | gpg --dearmor > conda.gpg && \
     install -o root -g root -m 644 conda.gpg /usr/share/keyrings/conda-archive-keyring.gpg && \
@@ -109,6 +112,9 @@ FROM ${BASE_IMAGE} as grpc
 
 ARG MAKEFLAGS
 ARG GRPC_VERSION=v1.58.0
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Shanghai
 
 ENV MAKEFLAGS=${MAKEFLAGS}
 
@@ -188,6 +194,9 @@ ARG BUILD_TYPE
 ARG TARGETARCH
 ARG IMAGE_TYPE=extras
 ARG MAKEFLAGS
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Shanghai
 
 ENV BUILD_TYPE=${BUILD_TYPE}
 ENV REBUILD=false
