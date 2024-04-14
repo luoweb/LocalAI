@@ -151,7 +151,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            quay.io/go-skynet/local-ai
+            quay.io/luweb/local-ai
           tags: |
             type=ref,event=branch
             type=semver,pattern={{raw}}
@@ -165,7 +165,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            localai/localai
+            luoweb/localai
           tags: |
             type=ref,event=branch
             type=semver,pattern={{raw}}
@@ -239,10 +239,10 @@ jobs:
       - name: Inspect image
         if: github.event_name != 'pull_request'
         run: |
-          docker pull localai/localai:${{ steps.meta.outputs.version }}
-          docker image inspect localai/localai:${{ steps.meta.outputs.version }}
-          docker pull quay.io/go-skynet/local-ai:${{ steps.meta.outputs.version }}
-          docker image inspect quay.io/go-skynet/local-ai:${{ steps.meta.outputs.version }}
+          docker pull luoweb/localai:${{ steps.meta.outputs.version }}
+          docker image inspect luoweb/localai:${{ steps.meta.outputs.version }}
+          docker pull quay.io/luweb/local-ai:${{ steps.meta.outputs.version }}
+          docker image inspect quay.io/luweb/local-ai:${{ steps.meta.outputs.version }}
 
       - name: Build and push AIO image
         if: inputs.aio != ''
@@ -250,7 +250,7 @@ jobs:
         with:
           builder: ${{ steps.buildx.outputs.name }}
           build-args: |
-            BASE_IMAGE=quay.io/go-skynet/local-ai:${{ steps.meta.outputs.version }}
+            BASE_IMAGE=quay.io/luweb/local-ai:${{ steps.meta.outputs.version }}
             MAKEFLAGS=${{ inputs.makeflags }}
           context: .
           file: ./Dockerfile.aio
@@ -265,7 +265,7 @@ jobs:
         with:
           builder: ${{ steps.buildx.outputs.name }}
           build-args: |
-            BASE_IMAGE=localai/localai:${{ steps.meta.outputs.version }}
+            BASE_IMAGE=luoweb/localai:${{ steps.meta.outputs.version }}
             MAKEFLAGS=${{ inputs.makeflags }}
           context: .
           file: ./Dockerfile.aio
@@ -278,22 +278,22 @@ jobs:
         # run this on branches, when it is a tag and there is a latest-image defined
         if: github.event_name != 'pull_request' && inputs.latest-image != ''  && github.ref_type == 'tag'
         run: |
-          docker pull localai/localai:${{ steps.meta.outputs.version }}
-          docker tag localai/localai:${{ steps.meta.outputs.version }} localai/localai:${{ inputs.latest-image }}
-          docker push localai/localai:${{ inputs.latest-image }}
-          docker pull quay.io/go-skynet/local-ai:${{ steps.meta.outputs.version }}
-          docker tag quay.io/go-skynet/local-ai:${{ steps.meta.outputs.version }} quay.io/go-skynet/local-ai:${{ inputs.latest-image }}
-          docker push quay.io/go-skynet/local-ai:${{ inputs.latest-image }}
+          docker pull luoweb/localai:${{ steps.meta.outputs.version }}
+          docker tag luoweb/localai:${{ steps.meta.outputs.version }} luoweb/localai:${{ inputs.latest-image }}
+          docker push luoweb/localai:${{ inputs.latest-image }}
+          docker pull quay.io/luweb/local-ai:${{ steps.meta.outputs.version }}
+          docker tag quay.io/luweb/local-ai:${{ steps.meta.outputs.version }} quay.io/luweb/local-ai:${{ inputs.latest-image }}
+          docker push quay.io/luweb/local-ai:${{ inputs.latest-image }}
       - name: Latest AIO tag
         # run this on branches, when it is a tag and there is a latest-image defined
         if: github.event_name != 'pull_request' && inputs.latest-image-aio != ''  && github.ref_type == 'tag'
         run: |
-          docker pull localai/localai:${{ steps.meta_aio_dockerhub.outputs.version }}
-          docker tag localai/localai:${{ steps.meta_aio_dockerhub.outputs.version }} localai/localai:${{ inputs.latest-image-aio }}
-          docker push localai/localai:${{ inputs.latest-image-aio }}
-          docker pull quay.io/go-skynet/local-ai:${{ steps.meta_aio.outputs.version }}
-          docker tag quay.io/go-skynet/local-ai:${{ steps.meta_aio.outputs.version }} quay.io/go-skynet/local-ai:${{ inputs.latest-image-aio }}
-          docker push quay.io/go-skynet/local-ai:${{ inputs.latest-image-aio }}
+          docker pull luoweb/localai:${{ steps.meta_aio_dockerhub.outputs.version }}
+          docker tag luoweb/localai:${{ steps.meta_aio_dockerhub.outputs.version }} luoweb/localai:${{ inputs.latest-image-aio }}
+          docker push luoweb/localai:${{ inputs.latest-image-aio }}
+          docker pull quay.io/luweb/local-ai:${{ steps.meta_aio.outputs.version }}
+          docker tag quay.io/luweb/local-ai:${{ steps.meta_aio.outputs.version }} quay.io/luweb/local-ai:${{ inputs.latest-image-aio }}
+          docker push quay.io/luweb/local-ai:${{ inputs.latest-image-aio }}
   
       - name: job summary
         run: |
