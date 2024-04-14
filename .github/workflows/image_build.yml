@@ -7,7 +7,7 @@ on:
       base-image:
         description: 'Base image'
         required: false
-        default: ''
+        default: 'ubuntu:20.04'
         type: string
       build-type:
         description: 'Build type'
@@ -19,7 +19,7 @@ on:
         type: string
       cuda-minor-version:
         description: 'CUDA minor version'
-        default: "7"
+        default: "6"
         type: string
       platforms:
         description: 'Platforms'
@@ -135,8 +135,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            quay.io/go-skynet/local-ai
-            localai/localai
+            quay.io/luweb/local-ai
+            luoweb/localai
           tags: |
             type=ref,event=branch
             type=semver,pattern={{raw}}
