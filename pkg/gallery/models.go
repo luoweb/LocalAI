@@ -92,7 +92,7 @@ func ReadConfigFile(filePath string) (*Config, error) {
 
 func InstallModel(basePath, nameOverride string, config *Config, configOverrides map[string]interface{}, downloadStatus func(string, string, string, float64)) error {
 	// Create base path if it doesn't exist
-	err := os.MkdirAll(basePath, 0755)
+	err := os.MkdirAll(basePath, 0750)
 	if err != nil {
 		return fmt.Errorf("failed to create base path: %v", err)
 	}
@@ -102,7 +102,7 @@ func InstallModel(basePath, nameOverride string, config *Config, configOverrides
 	}
 
 	// Download files and verify their SHA
-	for _, file := range config.Files {
+	for i, file := range config.Files {
 		log.Debug().Msgf("Checking %q exists and matches SHA", file.Filename)
 
 		if err := utils.VerifyPath(file.Filename, basePath); err != nil {
@@ -111,7 +111,7 @@ func InstallModel(basePath, nameOverride string, config *Config, configOverrides
 		// Create file path
 		filePath := filepath.Join(basePath, file.Filename)
 
-		if err := downloader.DownloadFile(file.URI, filePath, file.SHA256, downloadStatus); err != nil {
+		if err := downloader.DownloadFile(file.URI, filePath, file.SHA256, i, len(config.Files), downloadStatus); err != nil {
 			return err
 		}
 	}
@@ -125,12 +125,12 @@ func InstallModel(basePath, nameOverride string, config *Config, configOverrides
 		filePath := filepath.Join(basePath, template.Name+".tmpl")
 
 		// Create parent directory
-		err := os.MkdirAll(filepath.Dir(filePath), 0755)
+		err := os.MkdirAll(filepath.Dir(filePath), 0750)
 		if err != nil {
 			return fmt.Errorf("failed to create parent directory for prompt template %q: %v", template.Name, err)
 		}
 		// Create and write file content
-		err = os.WriteFile(filePath, []byte(template.Content), 0644)
+		err = os.WriteFile(filePath, []byte(template.Content), 0600)
 		if err != nil {
 			return fmt.Errorf("failed to write prompt template %q: %v", template.Name, err)
 		}
@@ -170,7 +170,7 @@ func InstallModel(basePath, nameOverride string, config *Config, configOverrides
 			return fmt.Errorf("failed to marshal updated config YAML: %v", err)
 		}
 
-		err = os.WriteFile(configFilePath, updatedConfigYAML, 0644)
+		err = os.WriteFile(configFilePath, updatedConfigYAML, 0600)
 		if err != nil {
 			return fmt.Errorf("failed to write updated config file: %v", err)
 		}

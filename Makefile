@@ -5,7 +5,7 @@ BINARY_NAME=local-ai
 
 # llama.cpp versions
 GOLLAMA_STABLE_VERSION?=2b57a8ae43e4699d3dc5d1496a1ccd42922993be
-CPPLLAMA_VERSION?=b8109bc0139f15a5b321909f47510b89dca47ffc
+CPPLLAMA_VERSION?=928e0b7013c862cf10701957b3d654aa70f11bd8
 
 # gpt4all version
 GPT4ALL_REPO?=https://github.com/nomic-ai/gpt4all
@@ -16,7 +16,7 @@ RWKV_REPO?=https://github.com/donomii/go-rwkv.cpp
 RWKV_VERSION?=661e7ae26d442f5cfebd2a0881b44e8c55949ec6
 
 # whisper.cpp version
-WHISPER_CPP_VERSION?=b0c3cbf2e851cf232e432b590dcc514a689ec028
+WHISPER_CPP_VERSION?=858452d58dba3acdc3431c9bced2bb8cfd9bf418
 
 # bert.cpp version
 BERT_VERSION?=6abe312cded14042f6b7c3cd8edf082713334a4d
@@ -25,7 +25,7 @@ BERT_VERSION?=6abe312cded14042f6b7c3cd8edf082713334a4d
 PIPER_VERSION?=9d0100873a7dbb0824dfea40e8cec70a1b110759
 
 # stablediffusion version
-STABLEDIFFUSION_VERSION?=362df9da29f882dbf09ade61972d16a1f53c3485
+STABLEDIFFUSION_VERSION?=433ea6d9b64d9d08067324a757ef07040ea29568
 
 # tinydream version
 TINYDREAM_VERSION?=22a12a4bc0ac5455856f28f3b771331a551a4293
@@ -437,10 +437,10 @@ protogen-go-clean:
 	$(RM) bin/*
 
 .PHONY: protogen-python
-protogen-python: autogptq-protogen bark-protogen coqui-protogen diffusers-protogen exllama-protogen exllama2-protogen mamba-protogen petals-protogen sentencetransformers-protogen transformers-protogen parler-tts-protogen transformers-musicgen-protogen vall-e-x-protogen vllm-protogen
+protogen-python: autogptq-protogen bark-protogen coqui-protogen diffusers-protogen exllama-protogen exllama2-protogen mamba-protogen petals-protogen rerankers-protogen sentencetransformers-protogen transformers-protogen parler-tts-protogen transformers-musicgen-protogen vall-e-x-protogen vllm-protogen
 
 .PHONY: protogen-python-clean
-protogen-python-clean: autogptq-protogen-clean bark-protogen-clean coqui-protogen-clean diffusers-protogen-clean exllama-protogen-clean exllama2-protogen-clean mamba-protogen-clean petals-protogen-clean sentencetransformers-protogen-clean transformers-protogen-clean transformers-musicgen-protogen-clean parler-tts-protogen-clean vall-e-x-protogen-clean vllm-protogen-clean
+protogen-python-clean: autogptq-protogen-clean bark-protogen-clean coqui-protogen-clean diffusers-protogen-clean exllama-protogen-clean exllama2-protogen-clean mamba-protogen-clean petals-protogen-clean sentencetransformers-protogen-clean rerankers-protogen-clean transformers-protogen-clean transformers-musicgen-protogen-clean parler-tts-protogen-clean vall-e-x-protogen-clean vllm-protogen-clean
 
 .PHONY: autogptq-protogen
 autogptq-protogen:
@@ -506,6 +506,14 @@ petals-protogen:
 petals-protogen-clean:
 	$(MAKE) -C backend/python/petals protogen-clean
 
+.PHONY: rerankers-protogen
+rerankers-protogen:
+	$(MAKE) -C backend/python/rerankers protogen
+
+.PHONY: rerankers-protogen-clean
+rerankers-protogen-clean:
+	$(MAKE) -C backend/python/rerankers protogen-clean
+
 .PHONY: sentencetransformers-protogen
 sentencetransformers-protogen:
 	$(MAKE) -C backend/python/sentencetransformers protogen
@@ -564,6 +572,7 @@ prepare-extra-conda-environments: protogen-python
 	$(MAKE) -C backend/python/vllm
 	$(MAKE) -C backend/python/mamba
 	$(MAKE) -C backend/python/sentencetransformers
+	$(MAKE) -C backend/python/rerankers
 	$(MAKE) -C backend/python/transformers
 	$(MAKE) -C backend/python/transformers-musicgen
 	$(MAKE) -C backend/python/parler-tts
@@ -698,7 +707,7 @@ docker-aio-all:
 
 docker-image-intel:
 	docker build \
-		--build-arg BASE_IMAGE=intel/oneapi-basekit:2024.0.1-devel-ubuntu22.04 \
+		--build-arg BASE_IMAGE=intel/oneapi-basekit:2024.1.0-devel-ubuntu22.04 \
 		--build-arg IMAGE_TYPE=$(IMAGE_TYPE) \
 		--build-arg GO_TAGS="none" \
 		--build-arg MAKEFLAGS="$(DOCKER_MAKEFLAGS)" \
@@ -706,7 +715,7 @@ docker-image-intel:
 
 docker-image-intel-xpu:
 	docker build \
-		--build-arg BASE_IMAGE=intel/oneapi-basekit:2024.0.1-devel-ubuntu22.04 \
+		--build-arg BASE_IMAGE=intel/oneapi-basekit:2024.1.0-devel-ubuntu22.04 \
 		--build-arg IMAGE_TYPE=$(IMAGE_TYPE) \
 		--build-arg GO_TAGS="none" \
 		--build-arg MAKEFLAGS="$(DOCKER_MAKEFLAGS)" \

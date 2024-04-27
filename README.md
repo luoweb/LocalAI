@@ -44,19 +44,19 @@
 
 [![tests](https://github.com/go-skynet/LocalAI/actions/workflows/test.yml/badge.svg)](https://github.com/go-skynet/LocalAI/actions/workflows/test.yml)[![Build and Release](https://github.com/go-skynet/LocalAI/actions/workflows/release.yaml/badge.svg)](https://github.com/go-skynet/LocalAI/actions/workflows/release.yaml)[![build container images](https://github.com/go-skynet/LocalAI/actions/workflows/image.yml/badge.svg)](https://github.com/go-skynet/LocalAI/actions/workflows/image.yml)[![Bump dependencies](https://github.com/go-skynet/LocalAI/actions/workflows/bump_deps.yaml/badge.svg)](https://github.com/go-skynet/LocalAI/actions/workflows/bump_deps.yaml)[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/localai)](https://artifacthub.io/packages/search?repo=localai)
 
-**LocalAI** is the free, Open Source OpenAI alternative. LocalAI act as a drop-in replacement REST API that’s compatible with OpenAI (Elevenlabs, Anthropic... ) API specifications for local AI inferencing. It allows you to run LLMs, generate images, audio (and not only) locally or on-prem with consumer grade hardware, supporting multiple model families. Does not require GPU.
+**LocalAI** is the free, Open Source OpenAI alternative. LocalAI act as a drop-in replacement REST API that’s compatible with OpenAI (Elevenlabs, Anthropic... ) API specifications for local AI inferencing. It allows you to run LLMs, generate images, audio (and not only) locally or on-prem with consumer grade hardware, supporting multiple model families. Does not require GPU. It is created and maintained by [Ettore Di Giacinto](https://github.com/mudler).
 
 ## 🔥🔥 Hot topics / Roadmap
 
 [Roadmap](https://github.com/mudler/LocalAI/issues?q=is%3Aissue+is%3Aopen+label%3Aroadmap)
 
+- Reranker API: https://github.com/mudler/LocalAI/pull/2121
+- Gallery WebUI: https://github.com/mudler/LocalAI/pull/2104
 - llama3: https://github.com/mudler/LocalAI/discussions/2076
 - Parler-TTS: https://github.com/mudler/LocalAI/pull/2027
-- Landing page: https://github.com/mudler/LocalAI/pull/1922
 - Openvino support: https://github.com/mudler/LocalAI/pull/1892
 - Vector store: https://github.com/mudler/LocalAI/pull/1795
 - All-in-one container image: https://github.com/mudler/LocalAI/issues/1855
-- Parallel function calling: https://github.com/mudler/LocalAI/pull/1726 / Tools API support: https://github.com/mudler/LocalAI/pull/1715
 
 Hot topics (looking for contributors):
 - Backends v2: https://github.com/mudler/LocalAI/issues/1126

@@ -23,24 +23,24 @@ func Startup(opts ...config.AppOption) (*config.BackendConfigLoader, *model.Mode
 	if options.ModelPath == "" {
 		return nil, nil, nil, fmt.Errorf("options.ModelPath cannot be empty")
 	}
-	err := os.MkdirAll(options.ModelPath, 0755)
+	err := os.MkdirAll(options.ModelPath, 0750)
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("unable to create ModelPath: %q", err)
 	}
 	if options.ImageDir != "" {
-		err := os.MkdirAll(options.ImageDir, 0755)
+		err := os.MkdirAll(options.ImageDir, 0750)
 		if err != nil {
 			return nil, nil, nil, fmt.Errorf("unable to create ImageDir: %q", err)
 		}
 	}
 	if options.AudioDir != "" {
-		err := os.MkdirAll(options.AudioDir, 0755)
+		err := os.MkdirAll(options.AudioDir, 0750)
 		if err != nil {
 			return nil, nil, nil, fmt.Errorf("unable to create AudioDir: %q", err)
 		}
 	}
 	if options.UploadDir != "" {
-		err := os.MkdirAll(options.UploadDir, 0755)
+		err := os.MkdirAll(options.UploadDir, 0750)
 		if err != nil {
 			return nil, nil, nil, fmt.Errorf("unable to create UploadDir: %q", err)
 		}
@@ -122,7 +122,10 @@ func Startup(opts ...config.AppOption) (*config.BackendConfigLoader, *model.Mode
 	// Watch the configuration directory
 	// If the directory does not exist, we don't watch it
 	configHandler := newConfigFileHandler(options)
-	configHandler.Watch()
+	err = configHandler.Watch()
+	if err != nil {
+		log.Error().Err(err).Msg("error establishing configuration directory watcher")
+	}
 
 	log.Info().Msg("core/startup process completed!")
 	return cl, ml, options, nil

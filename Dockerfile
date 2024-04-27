@@ -4,7 +4,7 @@ ARG GRPC_BASE_IMAGE=${BASE_IMAGE}
 
 
 # extras or core
-FROM ${BASE_IMAGE} as requirements-core
+FROM ${BASE_IMAGE} AS requirements-core
 
 USER root
 
@@ -18,7 +18,7 @@ ARG TARGETVARIANT
 ENV BUILD_TYPE=${BUILD_TYPE}
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Shanghai
-ENV EXTERNAL_GRPC_BACKENDS="coqui:/build/backend/python/coqui/run.sh,huggingface-embeddings:/build/backend/python/sentencetransformers/run.sh,petals:/build/backend/python/petals/run.sh,transformers:/build/backend/python/transformers/run.sh,sentencetransformers:/build/backend/python/sentencetransformers/run.sh,autogptq:/build/backend/python/autogptq/run.sh,bark:/build/backend/python/bark/run.sh,diffusers:/build/backend/python/diffusers/run.sh,exllama:/build/backend/python/exllama/run.sh,vall-e-x:/build/backend/python/vall-e-x/run.sh,vllm:/build/backend/python/vllm/run.sh,mamba:/build/backend/python/mamba/run.sh,exllama2:/build/backend/python/exllama2/run.sh,transformers-musicgen:/build/backend/python/transformers-musicgen/run.sh,parler-tts:/build/backend/python/parler-tts/run.sh"
+ENV EXTERNAL_GRPC_BACKENDS="coqui:/build/backend/python/coqui/run.sh,huggingface-embeddings:/build/backend/python/sentencetransformers/run.sh,petals:/build/backend/python/petals/run.sh,transformers:/build/backend/python/transformers/run.sh,sentencetransformers:/build/backend/python/sentencetransformers/run.sh,rerankers:/build/backend/python/rerankers/run.sh,autogptq:/build/backend/python/autogptq/run.sh,bark:/build/backend/python/bark/run.sh,diffusers:/build/backend/python/diffusers/run.sh,exllama:/build/backend/python/exllama/run.sh,vall-e-x:/build/backend/python/vall-e-x/run.sh,vllm:/build/backend/python/vllm/run.sh,mamba:/build/backend/python/mamba/run.sh,exllama2:/build/backend/python/exllama2/run.sh,transformers-musicgen:/build/backend/python/transformers-musicgen/run.sh,parler-tts:/build/backend/python/parler-tts/run.sh"
 
 ARG GO_TAGS="stablediffusion tinydream tts"
 
@@ -26,7 +26,7 @@ RUN apt-get update && \
     apt-get install -y ca-certificates curl python3-pip unzip && apt-get clean
 
 # Install Go
-RUN curl -L -s https://go.dev/dl/go$GO_VERSION.linux-$TARGETARCH.tar.gz | tar -C /usr/local -xz
+RUN curl -L -s https://go.dev/dl/go${GO_VERSION}.linux-${TARGETARCH}.tar.gz | tar -C /usr/local -xz
 ENV PATH $PATH:/usr/local/go/bin
 
 # Install grpc compilers
@@ -82,7 +82,7 @@ RUN test -n "$TARGETARCH" \
 ###################################
 ###################################
 
-FROM requirements-core as requirements-extras
+FROM requirements-core AS requirements-extras
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Shanghai
@@ -110,7 +110,7 @@ RUN if [ ! -e /usr/bin/python ]; then \
 ###################################
 ###################################
 
-FROM ${GRPC_BASE_IMAGE} as grpc
+FROM ${GRPC_BASE_IMAGE} AS grpc
 
 ARG MAKEFLAGS
 ARG GRPC_VERSION=v1.58.0
@@ -129,16 +129,15 @@ RUN apt-get update && \
 
 RUN git clone --recurse-submodules --jobs 4 -b ${GRPC_VERSION} --depth 1 --shallow-submodules https://github.com/grpc/grpc
 
-RUN cd grpc && \
-    mkdir -p cmake/build && \
-    cd cmake/build && \
-    cmake -DgRPC_INSTALL=ON -DgRPC_BUILD_TESTS=OFF ../.. && \
+WORKDIR /build/grpc/cmake/build
+
+RUN cmake -DgRPC_INSTALL=ON -DgRPC_BUILD_TESTS=OFF ../.. && \
     make
 
 ###################################
 ###################################
 
-FROM requirements-${IMAGE_TYPE} as builder
+FROM requirements-${IMAGE_TYPE} AS builder
 
 ARG GO_TAGS="stablediffusion tts"
 ARG GRPC_BACKENDS
@@ -176,9 +175,11 @@ RUN GRPC_BACKENDS=backend-assets/grpc/stablediffusion make build
 
 COPY --from=grpc /build/grpc ./grpc/
 
-RUN cd /build/grpc/cmake/build && make install
+WORKDIR /build/grpc/cmake/build
+RUN make install
 
 # Rebuild with defaults backends
+WORKDIR /build
 RUN make build
 
 RUN if [ ! -d "/build/sources/go-piper/piper-phonemize/pi/lib/" ]; then \
@@ -270,6 +271,9 @@ RUN if [ "${IMAGE_TYPE}" = "extras" ]; then \
     make -C backend/python/sentencetransformers \
     ; fi
 RUN if [ "${IMAGE_TYPE}" = "extras" ]; then \
+    make -C backend/python/rerankers \
+    ; fi
+RUN if [ "${IMAGE_TYPE}" = "extras" ]; then \
     make -C backend/python/transformers \
     ; fi
 RUN if [ "${IMAGE_TYPE}" = "extras" ]; then \
@@ -299,7 +303,7 @@ RUN mkdir -p /build/models
 
 # Define the health check command
 HEALTHCHECK --interval=1m --timeout=10m --retries=10 \
-  CMD curl -f $HEALTHCHECK_ENDPOINT || exit 1
+  CMD curl -f ${HEALTHCHECK_ENDPOINT} || exit 1
   
 VOLUME /build/models
 EXPOSE 8080

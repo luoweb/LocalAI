@@ -175,21 +175,26 @@ func App(cl *config.BackendConfigLoader, ml *model.ModelLoader, appConfig *confi
 	}
 
 	// Make sure directories exists
-	os.MkdirAll(appConfig.ImageDir, 0755)
-	os.MkdirAll(appConfig.AudioDir, 0755)
-	os.MkdirAll(appConfig.UploadDir, 0755)
-	os.MkdirAll(appConfig.ConfigsDir, 0755)
-	os.MkdirAll(appConfig.ModelPath, 0755)
+	os.MkdirAll(appConfig.ImageDir, 0750)
+	os.MkdirAll(appConfig.AudioDir, 0750)
+	os.MkdirAll(appConfig.UploadDir, 0750)
+	os.MkdirAll(appConfig.ConfigsDir, 0750)
+	os.MkdirAll(appConfig.ModelPath, 0750)
 
 	// Load config jsons
 	utils.LoadConfig(appConfig.UploadDir, openai.UploadedFilesFile, &openai.UploadedFiles)
 	utils.LoadConfig(appConfig.ConfigsDir, openai.AssistantsConfigFile, &openai.Assistants)
 	utils.LoadConfig(appConfig.ConfigsDir, openai.AssistantsFileConfigFile, &openai.AssistantFiles)
 
+	galleryService := services.NewGalleryService(appConfig.ModelPath)
+	galleryService.Start(appConfig.Context, cl)
+
 	routes.RegisterElevenLabsRoutes(app, cl, ml, appConfig, auth)
-	routes.RegisterLocalAIRoutes(app, cl, ml, appConfig, auth)
+	routes.RegisterLocalAIRoutes(app, cl, ml, appConfig, galleryService, auth)
 	routes.RegisterOpenAIRoutes(app, cl, ml, appConfig, auth)
 	routes.RegisterPagesRoutes(app, cl, ml, appConfig, auth)
+	routes.RegisterUIRoutes(app, cl, ml, appConfig, galleryService, auth)
+	routes.RegisterJINARoutes(app, cl, ml, appConfig, auth)
 
 	// Define a custom 404 handler
 	// Note: keep this at the bottom!

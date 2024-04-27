@@ -136,7 +136,7 @@ func removePartialFile(tmpFilePath string) error {
 	return nil
 }
 
-func DownloadFile(url string, filePath, sha string, downloadStatus func(string, string, string, float64)) error {
+func DownloadFile(url string, filePath, sha string, fileN, total int, downloadStatus func(string, string, string, float64)) error {
 	url = ConvertURL(url)
 	// Check if the file already exists
 	_, err := os.Stat(filePath)
@@ -184,7 +184,7 @@ func DownloadFile(url string, filePath, sha string, downloadStatus func(string, 
 	}
 
 	// Create parent directory
-	err = os.MkdirAll(filepath.Dir(filePath), 0755)
+	err = os.MkdirAll(filepath.Dir(filePath), 0750)
 	if err != nil {
 		return fmt.Errorf("failed to create parent directory for file %q: %v", filePath, err)
 	}
@@ -209,6 +209,8 @@ func DownloadFile(url string, filePath, sha string, downloadStatus func(string, 
 		fileName:       tmpFilePath,
 		total:          resp.ContentLength,
 		hash:           sha256.New(),
+		fileNo:         fileN,
+		totalFiles:     total,
 		downloadStatus: downloadStatus,
 	}
 	_, err = io.Copy(io.MultiWriter(outFile, progress), resp.Body)

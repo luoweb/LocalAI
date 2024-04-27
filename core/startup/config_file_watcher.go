@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"path/filepath"
 	"time"
 
 	"github.com/fsnotify/fsnotify"
@@ -20,7 +21,6 @@ type configFileHandler struct {
 
 	watcher *fsnotify.Watcher
 
-	configDir string
 	appConfig *config.ApplicationConfig
 }
 
@@ -29,7 +29,6 @@ type configFileHandler struct {
 func newConfigFileHandler(appConfig *config.ApplicationConfig) configFileHandler {
 	c := configFileHandler{
 		handlers:  make(map[string]fileHandler),
-		configDir: appConfig.DynamicConfigsDir,
 		appConfig: appConfig,
 	}
 	c.Register("api_keys.json", readApiKeysJson(*appConfig), true)
@@ -44,15 +43,17 @@ func (c *configFileHandler) Register(filename string, handler fileHandler, runNo
 	}
 	c.handlers[filename] = handler
 	if runNow {
-		c.callHandler(path.Join(c.appConfig.DynamicConfigsDir, filename), handler)
+		c.callHandler(filename, handler)
 	}
 	return nil
 }
 
 func (c *configFileHandler) callHandler(filename string, handler fileHandler) {
-	fileContent, err := os.ReadFile(filename)
+	rootedFilePath := filepath.Join(c.appConfig.DynamicConfigsDir, filepath.Clean(filename))
+	log.Trace().Str("filename", rootedFilePath).Msg("reading file for dynamic config update")
+	fileContent, err := os.ReadFile(rootedFilePath)
 	if err != nil && !os.IsNotExist(err) {
-		log.Error().Err(err).Str("filename", filename).Msg("could not read file")
+		log.Error().Err(err).Str("filename", rootedFilePath).Msg("could not read file")
 	}
 
 	if err = handler(fileContent, c.appConfig); err != nil {
@@ -64,7 +65,8 @@ func (c *configFileHandler) Watch() error {
 	configWatcher, err := fsnotify.NewWatcher()
 	c.watcher = configWatcher
 	if err != nil {
-		log.Fatal().Err(err).Str("configdir", c.configDir).Msg("wnable to create a watcher for configuration directory")
+		log.Fatal().Err(err).Str("configdir", c.appConfig.DynamicConfigsDir).Msg("unable to create a watcher for configuration directory")
+
 	}
 
 	if c.appConfig.DynamicConfigsDirPollInterval > 0 {
@@ -95,7 +97,7 @@ func (c *configFileHandler) Watch() error {
 						continue
 					}
 
-					c.callHandler(event.Name, handler)
+					c.callHandler(filepath.Base(event.Name), handler)
 				}
 			case err, ok := <-c.watcher.Errors:
 				log.Error().Err(err).Msg("config watcher error received")
@@ -122,7 +124,8 @@ func (c *configFileHandler) Stop() {
 
 func readApiKeysJson(startupAppConfig config.ApplicationConfig) fileHandler {
 	handler := func(fileContent []byte, appConfig *config.ApplicationConfig) error {
-		log.Debug().Msg("processing api_keys.json")
+		log.Debug().Msg("processing api keys runtime update")
+		log.Trace().Int("numKeys", len(startupAppConfig.ApiKeys)).Msg("api keys provided at startup")
 
 		if len(fileContent) > 0 {
 			// Parse JSON content from the file
@@ -132,11 +135,14 @@ func readApiKeysJson(startupAppConfig config.ApplicationConfig) fileHandler {
 				return err
 			}
 
+			log.Trace().Int("numKeys", len(fileKeys)).Msg("discovered API keys from api keys dynamic config dile")
+
 			appConfig.ApiKeys = append(startupAppConfig.ApiKeys, fileKeys...)
 		} else {
+			log.Trace().Msg("no API keys discovered from dynamic config file")
 			appConfig.ApiKeys = startupAppConfig.ApiKeys
 		}
-		log.Debug().Msg("api keys loaded from api_keys.json")
+		log.Trace().Int("numKeys", len(appConfig.ApiKeys)).Msg("total api keys after processing")
 		return nil
 	}
 
