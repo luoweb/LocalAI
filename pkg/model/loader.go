@@ -96,7 +96,13 @@ func (ml *ModelLoader) ListModels() ([]string, error) {
 	models := []string{}
 	for _, file := range files {
 		// Skip templates, YAML, .keep, .json, and .DS_Store files - TODO: as this list grows, is there a more efficient method?
-		if strings.HasSuffix(file.Name(), ".tmpl") || strings.HasSuffix(file.Name(), ".keep") || strings.HasSuffix(file.Name(), ".yaml") || strings.HasSuffix(file.Name(), ".yml") || strings.HasSuffix(file.Name(), ".json") || strings.HasSuffix(file.Name(), ".DS_Store") {
+		if strings.HasSuffix(file.Name(), ".tmpl") ||
+			strings.HasSuffix(file.Name(), ".keep") ||
+			strings.HasSuffix(file.Name(), ".yaml") ||
+			strings.HasSuffix(file.Name(), ".yml") ||
+			strings.HasSuffix(file.Name(), ".json") ||
+			strings.HasSuffix(file.Name(), ".DS_Store") ||
+			strings.HasPrefix(file.Name(), ".") {
 			continue
 		}
 
@@ -168,7 +174,10 @@ func (ml *ModelLoader) CheckIsLoaded(s string) ModelAddress {
 			if !ml.grpcProcesses[s].IsAlive() {
 				log.Debug().Msgf("GRPC Process is not responding: %s", s)
 				// stop and delete the process, this forces to re-load the model and re-create again the service
-				ml.deleteProcess(s)
+				err := ml.deleteProcess(s)
+				if err != nil {
+					log.Error().Err(err).Str("process", s).Msg("error stopping process")
+				}
 				return ""
 			}
 		}

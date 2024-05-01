@@ -5,7 +5,7 @@ BINARY_NAME=local-ai
 
 # llama.cpp versions
 GOLLAMA_STABLE_VERSION?=2b57a8ae43e4699d3dc5d1496a1ccd42922993be
-CPPLLAMA_VERSION?=928e0b7013c862cf10701957b3d654aa70f11bd8
+CPPLLAMA_VERSION?=f364eb6fb5d46118a76fa045f487318de4c24961
 
 # gpt4all version
 GPT4ALL_REPO?=https://github.com/nomic-ai/gpt4all
@@ -16,7 +16,7 @@ RWKV_REPO?=https://github.com/donomii/go-rwkv.cpp
 RWKV_VERSION?=661e7ae26d442f5cfebd2a0881b44e8c55949ec6
 
 # whisper.cpp version
-WHISPER_CPP_VERSION?=858452d58dba3acdc3431c9bced2bb8cfd9bf418
+WHISPER_CPP_VERSION?=8fac6455ffeb0a0950a84e790ddb74f7290d33c4
 
 # bert.cpp version
 BERT_VERSION?=6abe312cded14042f6b7c3cd8edf082713334a4d
@@ -25,10 +25,10 @@ BERT_VERSION?=6abe312cded14042f6b7c3cd8edf082713334a4d
 PIPER_VERSION?=9d0100873a7dbb0824dfea40e8cec70a1b110759
 
 # stablediffusion version
-STABLEDIFFUSION_VERSION?=433ea6d9b64d9d08067324a757ef07040ea29568
+STABLEDIFFUSION_VERSION?=4a3cd6aeae6f66ee57eae9a0075f8c58c3a6a38f
 
 # tinydream version
-TINYDREAM_VERSION?=22a12a4bc0ac5455856f28f3b771331a551a4293
+TINYDREAM_VERSION?=c04fa463ace9d9a6464313aa5f9cd0f953b6c057
 
 export BUILD_TYPE?=
 export STABLE_BUILD_TYPE?=$(BUILD_TYPE)
@@ -99,7 +99,7 @@ endif
 ifeq ($(BUILD_TYPE),cublas)
 	CGO_LDFLAGS+=-lcublas -lcudart -L$(CUDA_LIBPATH)
 	export LLAMA_CUBLAS=1
-	export WHISPER_CUBLAS=1
+	export WHISPER_CUDA=1
 	CGO_LDFLAGS_WHISPER+=-L$(CUDA_LIBPATH)/stubs/ -lcuda
 endif
 
@@ -240,7 +240,7 @@ sources/whisper.cpp:
 	cd sources/whisper.cpp && git checkout -b build $(WHISPER_CPP_VERSION) && git submodule update --init --recursive --depth 1
 
 sources/whisper.cpp/libwhisper.a: sources/whisper.cpp
-	cd sources/whisper.cpp && make libwhisper.a
+	cd sources/whisper.cpp && $(MAKE) libwhisper.a
 
 get-sources: sources/go-llama.cpp sources/gpt4all sources/go-piper sources/go-rwkv.cpp sources/whisper.cpp sources/go-bert.cpp sources/go-stable-diffusion sources/go-tiny-dream
 

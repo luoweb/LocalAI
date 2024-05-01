@@ -59,6 +59,8 @@
 - All-in-one container image: https://github.com/mudler/LocalAI/issues/1855
 
 Hot topics (looking for contributors):
+
+- WebUI improvements: https://github.com/mudler/LocalAI/issues/2156
 - Backends v2: https://github.com/mudler/LocalAI/issues/1126
 - Improving UX v2: https://github.com/mudler/LocalAI/issues/1373
 - Assistant API: https://github.com/mudler/LocalAI/issues/1273
@@ -89,7 +91,8 @@ docker run -ti --name local-ai -p 8080:8080 localai/localai:latest-aio-cpu
 - 🧠 [Embeddings generation for vector databases](https://localai.io/features/embeddings/)
 - ✍️ [Constrained grammars](https://localai.io/features/constrained_grammars/)
 - 🖼️ [Download Models directly from Huggingface ](https://localai.io/models/)
-- 🆕 [Vision API](https://localai.io/features/gpt-vision/)
+- 🥽 [Vision API](https://localai.io/features/gpt-vision/)
+- 🆕 [Reranker API](https://localai.io/features/reranker/)
 
 ## 💻 Usage
 

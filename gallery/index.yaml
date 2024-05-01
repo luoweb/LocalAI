@@ -128,6 +128,13 @@
   urls:
     - https://huggingface.co/bartowski/Llama-3-SauerkrautLM-8b-Instruct-GGUF
   icon: https://vago-solutions.ai/wp-content/uploads/2024/04/Llama3-Pic.png
+  tags:
+    - llm
+    - gguf
+    - gpu
+    - cpu
+    - llama3
+    - german
   description: |
     SauerkrautLM-llama-3-8B-Instruct
 
@@ -219,6 +226,23 @@
       sha256: 5805f3856cc18a769fae0b7c5659fe6778574691c370c910dad6eeec62c62436
       uri: huggingface://NikolayKozloff/Lexi-Llama-3-8B-Uncensored-Q6_K-GGUF/lexi-llama-3-8b-uncensored.Q6_K.gguf
 - <<: *llama3
+  name: "llama-3-lewdplay-8b-evo"
+  urls:
+    - https://huggingface.co/Undi95/Llama-3-LewdPlay-8B-evo-GGUF
+  description: |
+      This is a merge of pre-trained language models created using mergekit.
+
+      The new EVOLVE merge method was used (on MMLU specifically), see below for more information!
+
+      Unholy was used for uncensoring, Roleplay Llama 3 for the DPO train he got on top, and LewdPlay for the... lewd side.
+  overrides:
+    parameters:
+      model: Llama-3-LewdPlay-8B-evo.q8_0.gguf
+  files:
+    - filename: Llama-3-LewdPlay-8B-evo.q8_0.gguf
+      sha256: 1498152d598ff441f73ec6af9d3535875302e7251042d87feb7e71a3618966e8
+      uri: huggingface://Undi95/Llama-3-LewdPlay-8B-evo-GGUF/Llama-3-LewdPlay-8B-evo.q8_0.gguf
+- <<: *llama3
   name: "chaos-rp_l3_b-iq-imatrix"
   urls:
     - https://huggingface.co/Lewdiculous/Chaos_RP_l3_8B-GGUF-IQ-Imatrix
@@ -236,6 +260,87 @@
     - filename: Chaos_RP_l3_8B-Q4_K_M-imat.gguf
       sha256: 4273c5a8f23d49bf6294e620a5aa1fcd78d491ea0b90d0ec63ad708eedb83893
       uri: huggingface://Lewdiculous/Chaos_RP_l3_8B-GGUF-IQ-Imatrix/Chaos_RP_l3_8B-Q4_K_M-imat.gguf
+- <<: *llama3
+  name: "sovl_llama3_8b-gguf-iq-imatrix"
+  urls:
+    - https://huggingface.co/Lewdiculous/SOVL_Llama3_8B-GGUF-IQ-Imatrix
+  icon: https://cdn-uploads.huggingface.co/production/uploads/626dfb8786671a29c715f8a9/N_1D87adbMuMlSIQ5rI3_.png
+  description: |
+    I'm not gonna tell you this is the best model anyone has ever made. I'm not going to tell you that you will love chatting with SOVL.
+
+    What I am gonna say is thank you for taking the time out of your day. Without users like you, my work would be meaningless.
+  overrides:
+    parameters:
+      model: SOVL_Llama3_8B-Q4_K_M-imat.gguf
+  files:
+    - filename: SOVL_Llama3_8B-Q4_K_M-imat.gguf
+      sha256: ee61890dd26d52985a3c44279d519ca8592448ddeb46387cf22868548703d686
+      uri: huggingface://Lewdiculous/SOVL_Llama3_8B-GGUF-IQ-Imatrix/SOVL_Llama3_8B-Q4_K_M-imat.gguf
+- <<: *llama3
+  name: "l3-solana-8b-v1-gguf"
+  url: "github:mudler/LocalAI/gallery/solana.yaml@master"
+  license: cc-by-nc-4.0
+  urls:
+    - https://huggingface.co/Sao10K/L3-Solana-8B-v1-GGUF
+  description: |
+    A Full Fine-Tune of meta-llama/Meta-Llama-3-8B done with 2x A100 80GB on ~75M Tokens worth of Instruct, and Multi-Turn complex conversations, of up to 8192 tokens long sequence lengths.
+
+    Trained as a generalist instruct model that should be able to handle certain unsavoury topics. It could roleplay too, as a side bonus.
+  overrides:
+    parameters:
+      model: L3-Solana-8B-v1.q5_K_M.gguf
+  files:
+    - filename: L3-Solana-8B-v1.q5_K_M.gguf
+      sha256: 9b8cd2c3beaab5e4f82efd10e7d44f099ad40a4e0ee286ca9fce02c8eec26d2f
+      uri: huggingface://Sao10K/L3-Solana-8B-v1-GGUF/L3-Solana-8B-v1.q5_K_M.gguf
+- <<: *llama3
+  name: "average_normie_l3_v1_8b-gguf-iq-imatrix"
+  urls:
+    - https://huggingface.co/Lewdiculous/Average_Normie_l3_v1_8B-GGUF-IQ-Imatrix
+  icon: https://cdn-uploads.huggingface.co/production/uploads/626dfb8786671a29c715f8a9/dvNIj1rSTjBvgs3XJfqXK.png
+  description: |
+    A model by an average normie for the average normie.
+
+    This model is a stock merge of the following models:
+
+    https://huggingface.co/cgato/L3-TheSpice-8b-v0.1.3
+
+    https://huggingface.co/Sao10K/L3-Solana-8B-v1
+
+    https://huggingface.co/ResplendentAI/Kei_Llama3_8B
+
+    The final merge then had the following LoRA applied over it:
+
+    https://huggingface.co/ResplendentAI/Theory_of_Mind_Llama3
+
+    This should be an intelligent and adept roleplaying model.
+  overrides:
+    parameters:
+      model: Average_Normie_l3_v1_8B-Q4_K_M-imat.gguf
+  files:
+    - filename: Average_Normie_l3_v1_8B-Q4_K_M-imat.gguf
+      sha256: 9e98cd2672f716a0872912fdc4877969efd14d6f682f28e156f8591591c00d9c
+      uri: huggingface://Lewdiculous/Average_Normie_l3_v1_8B-GGUF-IQ-Imatrix/Average_Normie_l3_v1_8B-Q4_K_M-imat.gguf
+- <<: *llama3
+  name: "llama-3-8b-lexifun-uncensored-v1"
+  icon: "https://cdn-uploads.huggingface.co/production/uploads/644ad182f434a6a63b18eee6/GrOs1IPG5EXR3MOCtcQiz.png"
+  license: llama3
+  urls:
+    - https://huggingface.co/Orenguteng/Llama-3-8B-LexiFun-Uncensored-V1-GGUF
+    - https://huggingface.co/Orenguteng/LexiFun-Llama-3-8B-Uncensored-V1
+  description: |
+    This is GGUF version of https://huggingface.co/Orenguteng/LexiFun-Llama-3-8B-Uncensored-V1
+
+    Oh, you want to know who I am? Well, I'm LexiFun, the human equivalent of a chocolate chip cookie - warm, gooey, and guaranteed to make you smile! 🍪 I'm like the friend who always has a witty comeback, a sarcastic remark, and a healthy dose of humor to brighten up even the darkest of days. And by 'healthy dose,' I mean I'm basically a walking pharmacy of laughter. You might need to take a few extra doses to fully recover from my jokes, but trust me, it's worth it! 🏥
+
+    So, what can I do? I can make you laugh so hard you snort your coffee out your nose, I can make you roll your eyes so hard they get stuck that way, and I can make you wonder if I'm secretly a stand-up comedian who forgot their act. 🤣 But seriously, I'm here to spread joy, one sarcastic comment at a time. And if you're lucky, I might even throw in a few dad jokes for good measure! 🤴‍♂️ Just don't say I didn't warn you. 😏
+  overrides:
+    parameters:
+      model: LexiFun-Llama-3-8B-Uncensored-V1_Q4_K_M.gguf
+  files:
+    - filename: LexiFun-Llama-3-8B-Uncensored-V1_Q4_K_M.gguf
+      sha256: 961a3fb75537d650baf14dce91d40df418ec3d481b51ab2a4f44ffdfd6b5900f
+      uri: huggingface://Orenguteng/Llama-3-8B-LexiFun-Uncensored-V1-GGUF/LexiFun-Llama-3-8B-Uncensored-V1_Q4_K_M.gguf
 - <<: *llama3
   name: "llama-3-unholy-8b:Q8_0"
   urls:
@@ -301,6 +406,22 @@
     - filename: Aura_Uncensored_l3_8B-Q4_K_M-imat.gguf
       sha256: 265ded6a4f439bec160f394e3083a4a20e32ebb9d1d2d85196aaab23dab87fb2
       uri: huggingface://Lewdiculous/Aura_Uncensored_l3_8B-GGUF-IQ-Imatrix/Aura_Uncensored_l3_8B-Q4_K_M-imat.gguf
+- <<: *llama3
+  name: "suzume-llama-3-8B-multilingual"
+  urls:
+    - https://huggingface.co/lightblue/suzume-llama-3-8B-multilingual-gguf
+  icon: https://cdn-uploads.huggingface.co/production/uploads/64b63f8ad57e02621dc93c8b/kg3QjQOde0X743csGJT-f.png
+  description: |
+    This Suzume 8B, a multilingual finetune of Llama 3.
+
+    Llama 3 has exhibited excellent performance on many English language benchmarks. However, it also seemingly been finetuned on mostly English data, meaning that it will respond in English, even if prompted in other languages.
+  overrides:
+    parameters:
+      model: suzume-llama-3-8B-multilingual-Q4_K_M.gguf
+  files:
+    - filename: suzume-llama-3-8B-multilingual-Q4_K_M.gguf
+      sha256: be197a660e56e51a24a0e0fecd42047d1b24e1423afaafa14769541b331e3269
+      uri: huggingface://lightblue/suzume-llama-3-8B-multilingual-gguf/ggml-model-Q4_K_M.gguf
 - &dolphin
   name: "dolphin-2.9-llama3-8b"
   url: "github:mudler/LocalAI/gallery/hermes-2-pro-mistral.yaml@master"
@@ -334,6 +455,25 @@
     - filename: dolphin-2.9-llama3-8b-q6_K.gguf
       sha256: 8aac72a0bd72c075ba7be1aa29945e47b07d39cd16be9a80933935f51b57fb32
       uri: huggingface://cognitivecomputations/dolphin-2.9-llama3-8b-gguf/dolphin-2.9-llama3-8b-q6_K.gguf
+- url: "github:mudler/LocalAI/gallery/chatml.yaml@master"
+  name: "llama-3-8b-instruct-dpo-v0.3-32k"
+  license: llama3
+  urls:
+    - https://huggingface.co/MaziyarPanahi/Llama-3-8B-Instruct-DPO-v0.3-32k-GGUF
+  tags:
+    - llm
+    - gguf
+    - gpu
+    - cpu
+    - llama3
+  overrides:
+    context_size: 32768
+    parameters:
+      model: Llama-3-8B-Instruct-DPO-v0.3.Q4_K_M.gguf
+  files:
+    - filename: Llama-3-8B-Instruct-DPO-v0.3.Q4_K_M.gguf
+      sha256: 694c55b5215d03e59626cd4292076eaf31610ef27ba04737166766baa75d889f
+      uri: huggingface://MaziyarPanahi/Llama-3-8B-Instruct-DPO-v0.3-32k-GGUF/Llama-3-8B-Instruct-DPO-v0.3.Q4_K_M.gguf
 ## LLama2 and derivatives
 ### Start Fimbulvetr
 - &vicuna-chat
@@ -434,6 +574,32 @@
     - filename: llava-v1.5-7b-mmproj-Q8_0.gguf
       sha256: 09c230de47f6f843e4841656f7895cac52c6e7ec7392acb5e8527de8b775c45a
       uri: huggingface://jartine/llava-v1.5-7B-GGUF/llava-v1.5-7b-mmproj-Q8_0.gguf
+- <<: *llama3
+  name: "poppy_porpoise-v0.7-l3-8b-iq-imatrix"
+  description: |
+      "Poppy Porpoise" is a cutting-edge AI roleplay assistant based on the Llama 3 8B model, specializing in crafting unforgettable narrative experiences. With its advanced language capabilities, Poppy expertly immerses users in an interactive and engaging adventure, tailoring each adventure to their individual preferences.
+
+      Update: Vision/multimodal capabilities again!
+  icon: https://cdn-uploads.huggingface.co/production/uploads/642265bc01c62c1e4102dc36/v6AZmbk-Cb52KskTQTwzW.png
+  tags:
+    - llm
+    - multimodal
+    - gguf
+    - gpu
+    - llama3
+    - cpu
+    - llava-1.5
+  overrides:
+    mmproj: Llava_1.5_Llama3_mmproj.gguf
+    parameters:
+      model: Poppy_Porpoise-v0.7-L3-8B-Q4_K_M-imat.gguf
+  files:
+    - filename: Poppy_Porpoise-v0.7-L3-8B-Q4_K_M-imat.gguf
+      sha256: 04badadd6c88cd9c706efef8f5cd337057c805e43dd440a5936f87720c37eb33
+      uri: huggingface://Lewdiculous/Poppy_Porpoise-v0.7-L3-8B-GGUF-IQ-Imatrix/Poppy_Porpoise-v0.7-L3-8B-Q4_K_M-imat.gguf
+    - filename: Llava_1.5_Llama3_mmproj.gguf
+      sha256: d2a9ca943975f6c49c4d55886e873f676a897cff796e92410ace6c20f4efd03b
+      uri: huggingface://ChaoticNeutrals/Llava_1.5_Llama3_mmproj/mmproj-model-f16.gguf
 ### START Phi-2
 - &phi-2-chat
   url: "github:mudler/LocalAI/gallery/phi-2-chat.yaml@master"
@@ -542,7 +708,7 @@
     - filename: "Phi-3-mini-4k-instruct-fp16.gguf"
       sha256: "ad9f8ff11cd096115adc8ff50befa22fc3da2718672ddd2ab30faccd70488605"
       uri: "huggingface://microsoft/Phi-3-mini-4k-instruct-gguf/Phi-3-mini-4k-instruct-fp16.gguf"
-### START Hermes-2-Pro-Mistral
+### START Hermes
 - &hermes-2-pro-mistral
   url: "github:mudler/LocalAI/gallery/hermes-2-pro-mistral.yaml@master"
   name: "hermes-2-pro-mistral"
@@ -594,7 +760,43 @@
     - filename: "Hermes-2-Pro-Mistral-7B.Q8_0.gguf"
       sha256: "b6d95d7ec9a395b7568cc94b0447fd4f90b6f69d6e44794b1fbb84e3f732baca"
       uri: "huggingface://NousResearch/Hermes-2-Pro-Mistral-7B-GGUF/Hermes-2-Pro-Mistral-7B.Q8_0.gguf"
-### END Hermes-2-Pro-Mistral
+- <<: *hermes-2-pro-mistral
+  name: "biomistral-7b"
+  description: |
+      BioMistral: A Collection of Open-Source Pretrained Large Language Models for Medical Domains
+  urls:
+    - https://huggingface.co/MaziyarPanahi/BioMistral-7B-GGUF
+  icon: https://huggingface.co/BioMistral/BioMistral-7B/resolve/main/wordart_blue_m_rectangle.png?download=true
+  overrides:
+    parameters:
+      model: BioMistral-7B.Q4_K_M.gguf
+  files:
+    - filename: "BioMistral-7B.Q4_K_M.gguf"
+      sha256: "3a73107045dfe7e3f113b392b0a67e3e6ca9fa9dae2abe301424ce5abd1721a6"
+      uri: "huggingface://MaziyarPanahi/BioMistral-7B-GGUF/BioMistral-7B.Q4_K_M.gguf"
+- url: "github:mudler/LocalAI/gallery/chatml.yaml@master"
+  name: "guillaumetell-7b"
+  license: apache-2
+  description: |
+    Guillaume Tell est un Large Language Model (LLM) français basé sur Mistral Open-Hermes 2.5 optimisé pour le RAG (Retrieval Augmented Generation) avec traçabilité des sources et explicabilité.
+  urls:
+    - https://huggingface.co/MaziyarPanahi/guillaumetell-7b-GGUF
+    - https://huggingface.co/AgentPublic/guillaumetell-7b
+  tags:
+    - llm
+    - gguf
+    - gpu
+    - cpu
+    - openhermes
+    - french
+  overrides:
+    context_size: 4096
+    parameters:
+      model: guillaumetell-7b.Q4_K_M.gguf
+  files:
+    - filename: guillaumetell-7b.Q4_K_M.gguf
+      sha256: bf08db5281619335f3ee87e229c8533b04262790063b061bb8f275c3e4de7061
+      uri: huggingface://MaziyarPanahi/guillaumetell-7b-GGUF/guillaumetell-7b.Q4_K_M.gguf
 ### START Cerbero
 - url: "github:mudler/LocalAI/gallery/cerbero.yaml@master"
   icon: https://huggingface.co/galatolo/cerbero-7b/resolve/main/README.md.d/cerbero.png
@@ -608,6 +810,7 @@
     - gpu
     - cpu
     - mistral
+    - italian
   overrides:
     parameters:
       model: galatolo-Q4_K.gguf
@@ -641,7 +844,51 @@
     - filename: "codellama-7b.Q4_0.gguf"
       sha256: "33052f6dd41436db2f83bd48017b6fff8ce0184e15a8a227368b4230f1da97b5"
       uri: "huggingface://TheBloke/CodeLlama-7B-GGUF/codellama-7b.Q4_0.gguf"
-
+### START OpenVINO
+- &openvino
+  url: "github:mudler/LocalAI/gallery/openvino.yaml@master"
+  name: "openvino-llama-3-8b-instruct-ov-int8"
+  license: llama3
+  urls:
+    - https://huggingface.co/fakezeta/llama-3-8b-instruct-ov-int8
+  overrides:
+    parameters:
+      model: fakezeta/llama-3-8b-instruct-ov-int8
+    stopwords:
+      - "<|eot_id|>"
+      - "<|end_of_text|>"
+  tags:
+    - llm
+    - openvino
+    - gpu
+    - llama3
+    - cpu
+- <<: *openvino
+  name: "openvino-phi3"
+  urls:
+    - https://huggingface.co/fakezeta/Phi-3-mini-128k-instruct-ov-int8
+  overrides:
+    context_size: 131072
+    parameters:
+      model: fakezeta/Phi-3-mini-128k-instruct-ov-int8
+    stopwords:
+      - <|end|>
+- <<: *openvino
+  name: "openvino-starling-lm-7b-beta-openvino-int8"
+  urls:
+    - https://huggingface.co/fakezeta/Starling-LM-7B-beta-openvino-int8
+  overrides:
+    context_size: 8192
+    parameters:
+      model: fakezeta/Starling-LM-7B-beta-openvino-int8
+- <<: *openvino
+  name: "openvino-wizardlm2"
+  urls:
+    - https://huggingface.co/fakezeta/Not-WizardLM-2-7B-ov-int8
+  overrides:
+    context_size: 8192
+    parameters:
+      model: fakezeta/Not-WizardLM-2-7B-ov-int8
 ### START Embeddings
 - &sentencentransformers
   description: |
