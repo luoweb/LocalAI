@@ -5,7 +5,7 @@ BINARY_NAME=local-ai
 
 # llama.cpp versions
 GOLLAMA_STABLE_VERSION?=2b57a8ae43e4699d3dc5d1496a1ccd42922993be
-CPPLLAMA_VERSION?=f364eb6fb5d46118a76fa045f487318de4c24961
+CPPLLAMA_VERSION?=628b299106d1e9476fdecb3cbe546bf5c60f1b89
 
 # gpt4all version
 GPT4ALL_REPO?=https://github.com/nomic-ai/gpt4all
@@ -16,7 +16,7 @@ RWKV_REPO?=https://github.com/donomii/go-rwkv.cpp
 RWKV_VERSION?=661e7ae26d442f5cfebd2a0881b44e8c55949ec6
 
 # whisper.cpp version
-WHISPER_CPP_VERSION?=8fac6455ffeb0a0950a84e790ddb74f7290d33c4
+WHISPER_CPP_VERSION?=58210d6a7634ea1e42e0a2dab611f4a0518731dc
 
 # bert.cpp version
 BERT_VERSION?=6abe312cded14042f6b7c3cd8edf082713334a4d
@@ -152,9 +152,11 @@ ifeq ($(findstring tts,$(GO_TAGS)),tts)
 	OPTIONAL_GRPC+=backend-assets/grpc/piper
 endif
 
-ALL_GRPC_BACKENDS=backend-assets/grpc/langchain-huggingface
+ALL_GRPC_BACKENDS=backend-assets/grpc/huggingface
 ALL_GRPC_BACKENDS+=backend-assets/grpc/bert-embeddings
 ALL_GRPC_BACKENDS+=backend-assets/grpc/llama-cpp
+ALL_GRPC_BACKENDS+=backend-assets/grpc/llama-cpp-noavx
+ALL_GRPC_BACKENDS+=backend-assets/grpc/llama-cpp-fallback
 ALL_GRPC_BACKENDS+=backend-assets/grpc/llama-ggml
 ALL_GRPC_BACKENDS+=backend-assets/grpc/gpt4all
 ALL_GRPC_BACKENDS+=backend-assets/grpc/rwkv
@@ -293,6 +295,7 @@ clean: ## Remove build related file
 	rm -rf backend-assets/*
 	$(MAKE) -C backend/cpp/grpc clean
 	$(MAKE) -C backend/cpp/llama clean
+	rm -rf backend/cpp/llama-* || true
 	$(MAKE) dropreplace
 	$(MAKE) protogen-clean
 	rmdir pkg/grpc/proto || true
@@ -311,14 +314,19 @@ build: prepare backend-assets grpcs ## Build the project
 	CGO_LDFLAGS="$(CGO_LDFLAGS)" $(GOCMD) build -ldflags "$(LD_FLAGS)" -tags "$(GO_TAGS)" -o $(BINARY_NAME) ./
 
 build-minimal:
-	BUILD_GRPC_FOR_BACKEND_LLAMA=true GRPC_BACKENDS=backend-assets/grpc/llama-cpp GO_TAGS=none $(MAKE) build
+	BUILD_GRPC_FOR_BACKEND_LLAMA=true GRPC_BACKENDS="backend-assets/grpc/llama-cpp" GO_TAGS=none $(MAKE) build
 
 build-api:
 	BUILD_GRPC_FOR_BACKEND_LLAMA=true BUILD_API_ONLY=true GO_TAGS=none $(MAKE) build
 
 dist: build
 	mkdir -p release
+# if BUILD_ID is empty, then we don't append it to the binary name
+ifeq ($(BUILD_ID),)
+	cp $(BINARY_NAME) release/$(BINARY_NAME)-$(OS)-$(ARCH)
+else
 	cp $(BINARY_NAME) release/$(BINARY_NAME)-$(BUILD_ID)-$(OS)-$(ARCH)
+endif
 
 osx-signed: build
 	codesign --deep --force --sign "$(OSX_SIGNING_IDENTITY)" --entitlements "./Entitlements.plist" "./$(BINARY_NAME)"
@@ -616,8 +624,8 @@ backend-assets/grpc/gpt4all: sources/gpt4all sources/gpt4all/gpt4all-bindings/go
 	CGO_LDFLAGS="$(CGO_LDFLAGS)" C_INCLUDE_PATH=$(CURDIR)/sources/gpt4all/gpt4all-bindings/golang/ LIBRARY_PATH=$(CURDIR)/sources/gpt4all/gpt4all-bindings/golang/ \
 	$(GOCMD) build -ldflags "$(LD_FLAGS)" -tags "$(GO_TAGS)" -o backend-assets/grpc/gpt4all ./backend/go/llm/gpt4all/
 
-backend-assets/grpc/langchain-huggingface: backend-assets/grpc
-	$(GOCMD) build -ldflags "$(LD_FLAGS)" -tags "$(GO_TAGS)" -o backend-assets/grpc/langchain-huggingface ./backend/go/llm/langchain/
+backend-assets/grpc/huggingface: backend-assets/grpc
+	$(GOCMD) build -ldflags "$(LD_FLAGS)" -tags "$(GO_TAGS)" -o backend-assets/grpc/huggingface ./backend/go/llm/langchain/
 
 backend/cpp/llama/llama.cpp:
 	LLAMA_VERSION=$(CPPLLAMA_VERSION) $(MAKE) -C backend/cpp/llama llama.cpp
@@ -629,7 +637,7 @@ ADDED_CMAKE_ARGS=-Dabsl_DIR=${INSTALLED_LIB_CMAKE}/absl \
 				 -Dutf8_range_DIR=${INSTALLED_LIB_CMAKE}/utf8_range \
 				 -DgRPC_DIR=${INSTALLED_LIB_CMAKE}/grpc \
 				 -DCMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES=${INSTALLED_PACKAGES}/include
-backend/cpp/llama/grpc-server:
+build-llama-cpp-grpc-server:
 # Conditionally build grpc for the llama backend to use if needed
 ifdef BUILD_GRPC_FOR_BACKEND_LLAMA
 	$(MAKE) -C backend/cpp/grpc build
@@ -638,18 +646,36 @@ ifdef BUILD_GRPC_FOR_BACKEND_LLAMA
 	PATH="${INSTALLED_PACKAGES}/bin:${PATH}" \
 	CMAKE_ARGS="${CMAKE_ARGS} ${ADDED_CMAKE_ARGS}" \
 	LLAMA_VERSION=$(CPPLLAMA_VERSION) \
-	$(MAKE) -C backend/cpp/llama grpc-server
+	$(MAKE) -C backend/cpp/${VARIANT} grpc-server
 else
 	echo "BUILD_GRPC_FOR_BACKEND_LLAMA is not defined."
-	LLAMA_VERSION=$(CPPLLAMA_VERSION) $(MAKE) -C backend/cpp/llama grpc-server
+	LLAMA_VERSION=$(CPPLLAMA_VERSION) $(MAKE) -C backend/cpp/${VARIANT} grpc-server
 endif
 
-backend-assets/grpc/llama-cpp: backend-assets/grpc backend/cpp/llama/grpc-server
-	cp -rfv backend/cpp/llama/grpc-server backend-assets/grpc/llama-cpp
+backend-assets/grpc/llama-cpp: backend-assets/grpc
+	$(info ${GREEN}I llama-cpp build info:standard${RESET})
+	cp -rf backend/cpp/llama backend/cpp/llama-default
+	$(MAKE) -C backend/cpp/llama-default purge
+	$(MAKE) VARIANT="llama-default" build-llama-cpp-grpc-server
+	cp -rfv backend/cpp/llama-default/grpc-server backend-assets/grpc/llama-cpp
 # TODO: every binary should have its own folder instead, so can have different metal implementations
 ifeq ($(BUILD_TYPE),metal)
-	cp backend/cpp/llama/llama.cpp/build/bin/default.metallib backend-assets/grpc/
+	cp backend/cpp/llama-default/llama.cpp/build/bin/default.metallib backend-assets/grpc/
 endif
+
+backend-assets/grpc/llama-cpp-noavx: backend-assets/grpc
+	cp -rf backend/cpp/llama backend/cpp/llama-noavx
+	$(MAKE) -C backend/cpp/llama-noavx purge
+	$(info ${GREEN}I llama-cpp build info:noavx${RESET})
+	CMAKE_ARGS="$(CMAKE_ARGS) -DLLAMA_AVX512=OFF -DLLAMA_AVX2=OFF" $(MAKE) VARIANT="llama-noavx" build-llama-cpp-grpc-server
+	cp -rfv backend/cpp/llama-noavx/grpc-server backend-assets/grpc/llama-cpp-noavx
+
+backend-assets/grpc/llama-cpp-fallback: backend-assets/grpc
+	cp -rf backend/cpp/llama backend/cpp/llama-fallback
+	$(MAKE) -C backend/cpp/llama-fallback purge
+	$(info ${GREEN}I llama-cpp build info:fallback${RESET})
+	CMAKE_ARGS="$(CMAKE_ARGS) -DLLAMA_F16C=OFF -DLLAMA_AVX512=OFF -DLLAMA_AVX2=OFF -DLLAMA_FMA=OFF" $(MAKE) VARIANT="llama-fallback" build-llama-cpp-grpc-server
+	cp -rfv backend/cpp/llama-fallback/grpc-server backend-assets/grpc/llama-cpp-fallback
 
 backend-assets/grpc/llama-ggml: sources/go-llama.cpp sources/go-llama.cpp/libbinding.a backend-assets/grpc
 	CGO_LDFLAGS="$(CGO_LDFLAGS)" C_INCLUDE_PATH=$(CURDIR)/sources/go-llama.cpp LIBRARY_PATH=$(CURDIR)/sources/go-llama.cpp \

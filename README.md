@@ -50,6 +50,7 @@
 
 [Roadmap](https://github.com/mudler/LocalAI/issues?q=is%3Aissue+is%3Aopen+label%3Aroadmap)
 
+- Chat, TTS, and Image generation in the WebUI: https://github.com/mudler/LocalAI/pull/2222
 - Reranker API: https://github.com/mudler/LocalAI/pull/2121
 - Gallery WebUI: https://github.com/mudler/LocalAI/pull/2104
 - llama3: https://github.com/mudler/LocalAI/discussions/2076
@@ -131,7 +132,7 @@ Other:
 
 ## :book: 🎥 [Media, Blogs, Social](https://localai.io/basics/news/#media-blogs-social)
 
-- [Run LocalAI on AWS EKS with Pulumi](https://www.pulumi.com/ai/answers/tiZMDoZzZV6TLxgDXNBnFE/deploying-helm-charts-on-aws-eks)
+- [Run LocalAI on AWS EKS with Pulumi](https://www.pulumi.com/blog/low-code-llm-apps-with-local-ai-flowise-and-pulumi/)
 - [Run LocalAI on AWS](https://staleks.hashnode.dev/installing-localai-on-aws-ec2-instance)
 - [Create a slackbot for teams and OSS projects that answer to documentation](https://mudler.pm/posts/smart-slackbot-for-teams/)
 - [LocalAI meets k8sgpt](https://www.youtube.com/watch?v=PKrDNuJ_dfE)
