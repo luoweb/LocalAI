@@ -81,7 +81,9 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 ENV PATH="/root/.cargo/bin:${PATH}"
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-RUN apt-get update && \
+
+RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "11" ] || [ "${CUDA_MAJOR_VERSION}" = "12" ]; then \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
         espeak-ng \
         espeak \
@@ -90,6 +92,17 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "10" ] && [ "${CUDA_MINOR_VERSION}" = "1" ]; then \
+    sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list \
+    sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+    espeak-ng \
+    espeak \
+    python3-dev \
+    python3-venv && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 ###################################
 ###################################
 
