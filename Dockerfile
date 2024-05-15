@@ -16,7 +16,9 @@ ENV EXTERNAL_GRPC_BACKENDS="coqui:/build/backend/python/coqui/run.sh,huggingface
 
 ARG GO_TAGS="stablediffusion tinydream tts"
 
-RUN apt-get update && \
+RUN sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list \
+    sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
         build-essential \
         ccache \
@@ -56,7 +58,9 @@ ENV PATH /usr/local/cuda/bin:${PATH}
 ENV PATH /opt/rocm/bin:${PATH}
 
 # OpenBLAS requirements and stable diffusion
-RUN apt-get update && \
+RUN sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list \
+    sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
         libopenblas-dev \
         libopencv-dev && \
