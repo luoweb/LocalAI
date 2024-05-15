@@ -27,7 +27,7 @@ RUN sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.lis
         curl \
         git \
         python3-pip \
-        python-is-python3 \
+        # python-is-python3 \
         unzip && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
