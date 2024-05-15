@@ -1,8 +1,11 @@
 name: Build and Release
 
 on:
-- push
-- pull_request
+  push:
+      branches:
+        - main
+      tags:
+        - '*'
 
 env:
   GRPC_VERSION: v1.63.0
