@@ -104,7 +104,7 @@ ARG CUDA_MINOR_VERSION=7
 ENV BUILD_TYPE=${BUILD_TYPE}
 
 # CuBLAS requirements
-RUN if [ "${BUILD_TYPE}" = "cublas" ]; then \
+RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${BUILD_TYPE}" != "10" ]; then \
         apt-get update && \
         apt-get install -y  --no-install-recommends \
             software-properties-common && \
@@ -122,6 +122,24 @@ RUN if [ "${BUILD_TYPE}" = "cublas" ]; then \
         rm -rf /var/lib/apt/lists/* \
     ; fi
 
+RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "10" ]; then \
+    apt-get update && \
+    apt-get install -y  --no-install-recommends \
+    software-properties-common && \
+    curl -O https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.1-1_all.deb && \
+    dpkg -i cuda-keyring_1.1-1_all.deb && \
+    rm -f cuda-keyring_1.1-1_all.deb && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+    cuda-nvcc-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
+    libcurand-dev-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
+    libcublas-dev-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
+    libcusparse-dev-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
+    libcusolver-dev-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* \
+    ; fi
+    
 # If we are building with clblas support, we need the libraries for the builds
 RUN if [ "${BUILD_TYPE}" = "clblas" ]; then \
         apt-get update && \
