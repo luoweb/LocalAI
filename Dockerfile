@@ -104,11 +104,11 @@ ARG CUDA_MINOR_VERSION=7
 ENV BUILD_TYPE=${BUILD_TYPE}
 
 # CuBLAS requirements
-RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${BUILD_TYPE}" != "10" ]; then \
+RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "11" ] || [ "${CUDA_MAJOR_VERSION}" = "12" ];; then \
         apt-get update && \
         apt-get install -y  --no-install-recommends \
             software-properties-common && \
-        curl -O https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb && \
+        curl -O https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.1-1_all.deb && \
         dpkg -i cuda-keyring_1.1-1_all.deb && \
         rm -f cuda-keyring_1.1-1_all.deb && \
         apt-get update && \
@@ -122,20 +122,17 @@ RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${BUILD_TYPE}" != "10" ]; then \
         rm -rf /var/lib/apt/lists/* \
     ; fi
 
-RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "10" ]; then \
+RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "10" ] && [ "${CUDA_MINOR_VERSION}" = "1" ]; then \
     apt-get update && \
     apt-get install -y  --no-install-recommends \
     software-properties-common && \
-    curl -O https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.1-1_all.deb && \
+    curl -O https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1810/x86_64/cuda-keyring_1.1-1_all.deb && \
     dpkg -i cuda-keyring_1.1-1_all.deb && \
     rm -f cuda-keyring_1.1-1_all.deb && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
     cuda-nvcc-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
-    libcurand-dev-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
     libcublas-dev-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
-    libcusparse-dev-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
-    libcusolver-dev-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* \
     ; fi
