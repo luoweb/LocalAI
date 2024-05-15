@@ -3,11 +3,11 @@ name: 'Tests extras backends'
 
 on:
   pull_request:
-  push:
-    branches:
-      - master
-    tags:
-      - '*'
+  # push:
+  #   branches:
+  #     - master
+  #   tags:
+  #     - '*'
 
 concurrency:
   group: ci-tests-extra-${{ github.head_ref || github.ref }}-${{ github.repository }}

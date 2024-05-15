@@ -3,11 +3,11 @@ name: 'tests'
 
 on:
   pull_request:
-  push:
-    branches:
-      - master
-    tags:
-      - '*'
+  # push:
+  #   branches:
+  #     - master
+  #   tags:
+  #     - '*'
 
 env:
   GRPC_VERSION: v1.63.0
