@@ -16,8 +16,8 @@ ENV EXTERNAL_GRPC_BACKENDS="coqui:/build/backend/python/coqui/run.sh,huggingface
 
 ARG GO_TAGS="stablediffusion tinydream tts"
 
-RUN sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list \
-    sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list \
+RUN sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list  && \
+    sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list  &&  \
     apt-get update && \
     apt-get install -y --no-install-recommends \
         build-essential \
@@ -58,9 +58,7 @@ ENV PATH /usr/local/cuda/bin:${PATH}
 ENV PATH /opt/rocm/bin:${PATH}
 
 # OpenBLAS requirements and stable diffusion
-RUN sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list \
-    sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list \
-    apt-get update && \
+RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         libopenblas-dev \
         libopencv-dev && \
@@ -87,6 +85,8 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "11" ] || [ "${CUDA_MAJOR_VERSION}" = "12" ]; then \
+    sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
+    sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
         espeak-ng \
@@ -97,8 +97,8 @@ RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "11" ] || [
     rm -rf /var/lib/apt/lists/*
 
 RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "10" ] && [ "${CUDA_MINOR_VERSION}" = "1" ]; then \
-    sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list \
-    sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list \
+    sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
+    sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
     espeak-ng \
@@ -140,8 +140,6 @@ RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "11" ] || [
     ; fi
 
 RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "10" ] && [ "${CUDA_MINOR_VERSION}" = "1" ]; then \
-    sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list \
-    sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list \
     apt-get update && \
     apt-get install -y  --no-install-recommends \
     software-properties-common && \
