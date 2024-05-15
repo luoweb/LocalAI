@@ -104,7 +104,7 @@ ARG CUDA_MINOR_VERSION=7
 ENV BUILD_TYPE=${BUILD_TYPE}
 
 # CuBLAS requirements
-RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "11" ] || [ "${CUDA_MAJOR_VERSION}" = "12" ];; then \
+RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "11" ] || [ "${CUDA_MAJOR_VERSION}" = "12" ]; then \
         apt-get update && \
         apt-get install -y  --no-install-recommends \
             software-properties-common && \
