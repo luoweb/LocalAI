@@ -152,7 +152,7 @@ RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "10" ] && [
     sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
     apt-get update && \
     apt-get install -y  --no-install-recommends \
-    software-properties-common && \
+    software-properties-common dirmngr && \
     curl -O https://developer.download.nvidia.cn/compute/cuda/repos/ubuntu1810/x86_64/cuda-repo-ubuntu1810_10.1.168-1_amd64.deb && \
     dpkg -i cuda-repo-ubuntu1810_10.1.168-1_amd64.deb && \
     rm -f cuda-repo-ubuntu1810_10.1.168-1_amd64.deb && \
