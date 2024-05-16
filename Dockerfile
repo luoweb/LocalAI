@@ -206,7 +206,8 @@ RUN sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.lis
     apt-get install -y --no-install-recommends \
         ca-certificates \
         build-essential \
-        # cmake \
+        wget \
+    # cmake \
         git && \
     wget https://cmake.org/files/v3.16/cmake-3.16.9-Linux-x86_64.sh && \
     sh cmake-3.16.9-linux-x86_64.sh --skip-license --prefix=/usr/local/ && \
