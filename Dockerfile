@@ -156,8 +156,9 @@ RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "10" ] && [
     curl -O https://developer.download.nvidia.cn/compute/cuda/repos/ubuntu1810/x86_64/cuda-repo-ubuntu1810_10.1.168-1_amd64.deb && \
     dpkg -i cuda-repo-ubuntu1810_10.1.168-1_amd64.deb && \
     rm -f cuda-repo-ubuntu1810_10.1.168-1_amd64.deb && \
-    cp /var/cuda-repo-ubuntu1810/cuda-*-keyring.gpg /usr/share/keyrings/ && \
-    # apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub && \
+    # cp /var/cuda-repo-ubuntu1810/cuda-*-keyring.gpg /usr/share/keyrings/ && \
+    # apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1810/x86_64/7fa2af80.pub
+    apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
     cuda-nvcc-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
