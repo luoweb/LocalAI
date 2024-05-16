@@ -30,11 +30,12 @@ RUN sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.lis
         # python-is-python3 \
         unzip && \
     apt-get clean && \
-    which python3 pip3 python pip && \
-    # ln -s /usr/bin/pip3 /usr/bin/pip && \
-    # ln -s /usr/bin/python3 /usr/bin/python && \
+    which python3 pip3 && \
+    ln -s /usr/bin/pip3 /usr/bin/pip && \
+    ln -s /usr/bin/python3 /usr/bin/python && \
     rm -rf /var/lib/apt/lists/* && \
-    pip3 install --upgrade pip
+    pip3 install --no-cache-dir pip --upgrade && \
+    exit 0
 
 # Install Go
 RUN curl -L -s https://go.dev/dl/go${GO_VERSION}.linux-${TARGETARCH}.tar.gz | tar -C /usr/local -xz
