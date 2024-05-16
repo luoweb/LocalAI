@@ -30,6 +30,9 @@ RUN sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.lis
         # python-is-python3 \
         unzip && \
     apt-get clean && \
+    which python3 pip3 python pip && \
+    ln -s /usr/local/bin/pip3 /usr/local/bin/pip && \
+    ln -s /usr/local/bin/python3 /usr/local/bin/python && \
     rm -rf /var/lib/apt/lists/* && \
     pip install --upgrade pip
 
@@ -207,7 +210,7 @@ RUN sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.lis
         ca-certificates \
         build-essential \
         wget \
-    # cmake \
+        # cmake \
         git && \
     wget https://cmake.org/files/v3.16/cmake-3.16.9-Linux-x86_64.sh && \
     sh cmake-3.16.9-linux-x86_64.sh --skip-license --prefix=/usr/local/ && \
