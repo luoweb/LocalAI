@@ -31,8 +31,8 @@ RUN sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.lis
         unzip && \
     apt-get clean && \
     which python3 pip3 python pip && \
-    ln -s /usr/local/bin/pip3 /usr/local/bin/pip && \
-    ln -s /usr/local/bin/python3 /usr/local/bin/python && \
+    ln -s /usr/bin/pip3 /usr/bin/pip && \
+    ln -s /usr/bin/python3 /usr/bin/python && \
     rm -rf /var/lib/apt/lists/* && \
     pip install --upgrade pip
 
