@@ -126,6 +126,7 @@ ARG CUDA_MAJOR_VERSION=11
 ARG CUDA_MINOR_VERSION=7
 
 ENV BUILD_TYPE=${BUILD_TYPE}
+ENV LD_LIBRARY_PATH=/usr/local/cuda-10.1/targets/x86_64-linux/lib/:$LD_LIBRARY_PATH
 
 # CuBLAS requirements
 RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "11" ] || [ "${CUDA_MAJOR_VERSION}" = "12" ]; then \
@@ -173,6 +174,7 @@ RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "10" ] && [
     cuda-cusolver-dev-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
     libcublas-dev && \
     apt-get clean && \
+    ln -s /usr/local/cuda-10.1 /usr/local/cuda && \
     rm -rf /var/lib/apt/lists/* \
     ; fi
     
