@@ -213,7 +213,7 @@ RUN sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.lis
         # cmake \
         git && \
     wget https://cmake.org/files/v3.16/cmake-3.16.9-Linux-x86_64.sh && chmod +x *.sh && \
-    ./cmake-3.16.9-linux-x86_64.sh --skip-license --prefix=/usr/local/ && \
+    ./cmake-3.16.9-Linux-x86_64.sh --skip-license --prefix=/usr/local/ && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
