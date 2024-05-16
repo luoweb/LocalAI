@@ -266,10 +266,11 @@ RUN make prepare
 RUN curl -L -s https://github.com/protocolbuffers/protobuf/releases/download/v26.1/protoc-26.1-linux-x86_64.zip -o protoc.zip && \
     unzip -j -d /usr/local/bin protoc.zip bin/protoc && \
     rm protoc.zip && \
-    find /usr/local/ -name libcudart.so
+    ls -l /usr/local && \
+    find /usr/local/ -name libcu*.so
 
 # stablediffusion does not tolerate a newer version of abseil, build it first
-RUN GRPC_BACKENDS=backend-assets/grpc/stablediffusion make build
+# RUN GRPC_BACKENDS=backend-assets/grpc/stablediffusion make build
 
 # Install the pre-built GRPC
 COPY --from=grpc /opt/grpc /usr/local
