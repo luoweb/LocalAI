@@ -162,7 +162,7 @@ RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "10" ] && [
     apt-get update && \
     apt-get install -y --no-install-recommends \
     cuda-nvcc-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
-    libcublas-dev-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
+    libcublas-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* \
     ; fi
