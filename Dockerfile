@@ -31,10 +31,10 @@ RUN sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.lis
         unzip && \
     apt-get clean && \
     which python3 pip3 python pip && \
-    ln -s /usr/bin/pip3 /usr/bin/pip && \
-    ln -s /usr/bin/python3 /usr/bin/python && \
+    # ln -s /usr/bin/pip3 /usr/bin/pip && \
+    # ln -s /usr/bin/python3 /usr/bin/python && \
     rm -rf /var/lib/apt/lists/* && \
-    pip install --upgrade pip
+    pip3 install --upgrade pip
 
 # Install Go
 RUN curl -L -s https://go.dev/dl/go${GO_VERSION}.linux-${TARGETARCH}.tar.gz | tar -C /usr/local -xz
@@ -45,7 +45,7 @@ RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@latest && \
     go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 
 # Install grpcio-tools (the version in 22.04 is too old)
-RUN pip install --user grpcio-tools
+RUN pip3 install --user grpcio-tools
 
 COPY --chmod=644 custom-ca-certs/* /usr/local/share/ca-certificates/
 RUN update-ca-certificates
