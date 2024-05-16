@@ -163,6 +163,14 @@ RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "10" ] && [
     apt-get update && \
     apt-get install -y --no-install-recommends \
     cuda-nvcc-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
+    cuda-cudart-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
+    cuda-cudart-dev-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
+    cuda-curand-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
+    cuda-curand-dev-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
+    cuda-cusparse-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
+    cuda-cusparse-dev-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
+    cuda-cusolver-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
+    cuda-cusolver-dev-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
     libcublas-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* \
@@ -270,7 +278,7 @@ RUN curl -L -s https://github.com/protocolbuffers/protobuf/releases/download/v26
     find /usr/local/ -name libcu*.so
 
 # stablediffusion does not tolerate a newer version of abseil, build it first
-# RUN GRPC_BACKENDS=backend-assets/grpc/stablediffusion make build
+RUN GRPC_BACKENDS=backend-assets/grpc/stablediffusion make build
 
 # Install the pre-built GRPC
 COPY --from=grpc /opt/grpc /usr/local
