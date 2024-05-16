@@ -14,7 +14,8 @@ ARG TARGETVARIANT
 ENV DEBIAN_FRONTEND=noninteractive
 ENV EXTERNAL_GRPC_BACKENDS="coqui:/build/backend/python/coqui/run.sh,huggingface-embeddings:/build/backend/python/sentencetransformers/run.sh,petals:/build/backend/python/petals/run.sh,transformers:/build/backend/python/transformers/run.sh,sentencetransformers:/build/backend/python/sentencetransformers/run.sh,rerankers:/build/backend/python/rerankers/run.sh,autogptq:/build/backend/python/autogptq/run.sh,bark:/build/backend/python/bark/run.sh,diffusers:/build/backend/python/diffusers/run.sh,exllama:/build/backend/python/exllama/run.sh,vall-e-x:/build/backend/python/vall-e-x/run.sh,vllm:/build/backend/python/vllm/run.sh,mamba:/build/backend/python/mamba/run.sh,exllama2:/build/backend/python/exllama2/run.sh,transformers-musicgen:/build/backend/python/transformers-musicgen/run.sh,parler-tts:/build/backend/python/parler-tts/run.sh"
 
-ARG GO_TAGS="stablediffusion tinydream tts"
+# ARG GO_TAGS="stablediffusion tinydream tts"
+ARG GO_TAGS="tts"
 
 RUN sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list  && \
     sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list  &&  \
@@ -239,7 +240,8 @@ RUN git clone --recurse-submodules --jobs 4 -b ${GRPC_VERSION} --depth 1 --shall
 # Adjustments to the build process should likely be made here.
 FROM requirements-drivers AS builder
 
-ARG GO_TAGS="stablediffusion tts"
+# ARG GO_TAGS="stablediffusion tts"
+ARG GO_TAGS="tts"
 ARG GRPC_BACKENDS
 ARG MAKEFLAGS
 
@@ -263,7 +265,8 @@ RUN make prepare
 # here so that we can generate the grpc code for the stablediffusion build
 RUN curl -L -s https://github.com/protocolbuffers/protobuf/releases/download/v26.1/protoc-26.1-linux-x86_64.zip -o protoc.zip && \
     unzip -j -d /usr/local/bin protoc.zip bin/protoc && \
-    rm protoc.zip
+    rm protoc.zip && \
+    find /usr/local/ -name libcudart.so
 
 # stablediffusion does not tolerate a newer version of abseil, build it first
 RUN GRPC_BACKENDS=backend-assets/grpc/stablediffusion make build
