@@ -287,8 +287,8 @@ COPY --from=grpc /opt/grpc /usr/local
 
 # Rebuild with defaults backends
 WORKDIR /build
-RUN GRPC_BACKENDS=backend-assets/grpc/llama-ggml backend-assets/grpc/llama-cpp-grpc backend-assets/util/llama-cpp-rpc-server make build
-# RUN make build
+# RUN GRPC_BACKENDS=backend-assets/grpc/llama-ggml backend-assets/grpc/llama-cpp-grpc backend-assets/util/llama-cpp-rpc-server make build
+RUN make build
 
 RUN if [ ! -d "/build/sources/go-piper/piper-phonemize/pi/lib/" ]; then \
         mkdir -p /build/sources/go-piper/piper-phonemize/pi/lib/ \
