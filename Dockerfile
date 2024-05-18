@@ -144,8 +144,8 @@ RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "11" ] || [
             libcurand-dev-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
             libcublas-dev-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
             libcusparse-dev-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
-            libcusolver-dev-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} && \
-            g++-10 gcc-10 \
+            libcusolver-dev-${CUDA_MAJOR_VERSION}-${CUDA_MINOR_VERSION} \
+            g++-10 gcc-10 && \
             update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 20 && \
             update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 20  && \
         apt-get clean && \
