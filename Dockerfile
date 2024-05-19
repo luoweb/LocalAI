@@ -186,7 +186,7 @@ RUN if [ "${BUILD_TYPE}" = "clblas" ]; then \
         if ["$BASE_IMAGE" = "ubuntu:18.10"]; then \
             sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
             sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list  \
-        fi && \
+        ; fi && \
         apt-get update && \
         apt-get install -y --no-install-recommends \
             libclblast-dev && \
@@ -198,7 +198,7 @@ RUN if [ "${BUILD_TYPE}" = "hipblas" ]; then \
         if ["$BASE_IMAGE" = "ubuntu:18.10"]; then \
             sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
             sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list  \
-        fi && \
+        ; fi && \
         apt-get update && \
         apt-get install -y --no-install-recommends \
             hipblas-dev \
@@ -228,7 +228,7 @@ WORKDIR /build
 RUN if [ "$BASE_IMAGE" = "ubuntu:18.10" ]; then \
         sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
         sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list  \
-    fi && \
+    ; fi && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
         ca-certificates \
@@ -333,7 +333,7 @@ RUN if [ "${FFMPEG}" = "true" ]; then \
         if ["$BASE_IMAGE" = "ubuntu:18.10"]; then \
             sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
             sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list  \
-        fi && \
+        ; fi && \
         apt-get update && \
         apt-get install -y --no-install-recommends \
             ffmpeg && \
