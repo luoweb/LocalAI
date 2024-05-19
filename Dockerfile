@@ -92,8 +92,8 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "11" ] || [ "${CUDA_MAJOR_VERSION}" = "12" ]; then \
-    sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
-    sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
+    # sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
+    # sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
         espeak-ng \
@@ -130,8 +130,8 @@ ENV LD_LIBRARY_PATH=/usr/local/cuda-10.1/targets/x86_64-linux/lib/:$LD_LIBRARY_P
 
 # CuBLAS requirements
 RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "11" ] || [ "${CUDA_MAJOR_VERSION}" = "12" ]; then \
-        sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
-        sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
+        # sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
+        # sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
         apt-get update && \
         apt-get install -y  --no-install-recommends \
             software-properties-common && \
@@ -183,8 +183,10 @@ RUN if [ "${BUILD_TYPE}" = "cublas" ] && [ "${CUDA_MAJOR_VERSION}" = "10" ] && [
     
 # If we are building with clblas support, we need the libraries for the builds
 RUN if [ "${BUILD_TYPE}" = "clblas" ]; then \
-        sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
-        sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
+        if ["$BASE_IMAGE" = "ubuntu:18.10"]; then \
+            sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
+            sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list  \
+        fi && \
         apt-get update && \
         apt-get install -y --no-install-recommends \
             libclblast-dev && \
@@ -193,8 +195,10 @@ RUN if [ "${BUILD_TYPE}" = "clblas" ]; then \
     ; fi
 
 RUN if [ "${BUILD_TYPE}" = "hipblas" ]; then \
-        sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
-        sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
+        if ["$BASE_IMAGE" = "ubuntu:18.10"]; then \
+            sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
+            sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list  \
+        fi && \
         apt-get update && \
         apt-get install -y --no-install-recommends \
             hipblas-dev \
@@ -221,8 +225,10 @@ ENV MAKEFLAGS=${GRPC_MAKEFLAGS}
 
 WORKDIR /build
 
-RUN sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
-    sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
+RUN if [ "$BASE_IMAGE" = "ubuntu:18.10" ]; then \
+        sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
+        sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list  \
+    fi && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
         ca-certificates \
@@ -324,8 +330,10 @@ ENV NVIDIA_VISIBLE_DEVICES=all
 
 # Add FFmpeg
 RUN if [ "${FFMPEG}" = "true" ]; then \
-        sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
-        sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
+        if ["$BASE_IMAGE" = "ubuntu:18.10"]; then \
+            sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list && \
+            sed -i 's/security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list  \
+        fi && \
         apt-get update && \
         apt-get install -y --no-install-recommends \
             ffmpeg && \
